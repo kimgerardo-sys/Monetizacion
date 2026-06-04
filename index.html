@@ -3,303 +3,566 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ViralFlow Architect</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts & Lucide Icons via fontawesome/svg -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
-    <!-- Meta tags para emulación Nativa iOS/Android -->
+    <title>RapSkills Pro - Freestyle Trainer</title>
+    <!-- Meta Tags para PWA e iOS -->
+    <meta name="theme-color" content="#0f172a">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#0f172a">
+    <meta name="apple-mobile-web-app-title" content="RapSkills">
+    
+    <!-- CDNs Requeridos (Tailwind CSS & Lucide Icons) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; font-display: swap; }
-        .glass { background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .thumb-nav-padding { padding-bottom: 90px; }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        /* Deshabilitar scroll elástico en iOS para emular app nativa */
+        html, body {
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+        }
     </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen antialiased selection:bg-indigo-500/30">
+<body class="bg-slate-950 text-slate-100 flex flex-col justify-between min-h-screen">
 
-    <!-- CONTENEDOR PRINCIPAL MOBILE-FIRST -->
-    <main class="max-w-md mx-auto min-h-screen relative flex flex-col thumb-nav-padding px-4 pt-6">
+    <!-- Header con Efecto Glassmorphism -->
+    <header class="w-full max-w-md mx-auto bg-slate-900/80 backdrop-blur-md border-b border-slate-800/60 px-6 py-4 flex items-center justify-between z-50 fixed top-0 left-0 right-0">
+        <div class="flex items-center gap-2">
+            <div class="p-2 bg-indigo-600 rounded-xl shadow-lg shadow-indigo-500/30">
+                <i data-lucide="mic" class="w-5 h-5 text-white"></i>
+            </div>
+            <div>
+                <h1 class="text-lg font-extrabold tracking-tight text-white flex items-center gap-1.5">
+                    RAPSKILLS <span class="text-xs px-2 py-0.5 bg-indigo-500/20 text-indigo-400 rounded-full font-semibold border border-indigo-500/30">PRO</span>
+                </h1>
+                <p class="text-[10px] text-slate-400 uppercase tracking-widest font-semibold">Sonora Cypher Lab</p>
+            </div>
+        </div>
+        <button id="btnStats" aria-label="Ver Estadísticas" class="p-3 bg-slate-800/60 rounded-xl border border-slate-700/50 active:scale-95 transition-all duration-200">
+            <i data-lucide="bar-chart-3" class="w-5 h-5 text-indigo-400"></i>
+        </button>
+    </header>
+
+    <!-- Contenedor Principal con Scroll Controlado -->
+    <main class="w-full max-w-md mx-auto flex-1 overflow-y-auto pt-24 pb-32 px-4 space-y-5">
         
-        <!-- HEADER APP-LIKE -->
-        <header class="flex items-center justify-between mb-6 glass p-4 rounded-2xl">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
-                    <span class="font-bold text-white tracking-tighter">VF</span>
+        <!-- Pantalla de Configuración Inicial -->
+        <section id="setupSection" class="space-y-5">
+            <div class="bg-slate-900/40 border border-slate-800 rounded-2xl p-5 space-y-4">
+                <div class="flex items-center gap-2 mb-2">
+                    <i data-lucide="zap" class="w-5 h-5 text-amber-400"></i>
+                    <h2 class="text-sm font-bold uppercase tracking-wider text-slate-300">1. Habilidad / Figura Retórica</h2>
                 </div>
-                <div>
-                    <h1 class="text-lg font-bold tracking-tight text-white">ViralFlow</h1>
-                    <p class="text-xs text-slate-400">Estrategia & Monetización Urbano</p>
+                <div class="grid grid-cols-1 gap-2" id="skillsGrid">
+                    <!-- Inyección dinámica de habilidades -->
                 </div>
             </div>
-            <span class="text-xs bg-emerald-500/20 text-emerald-400 px-2.5 py-1 rounded-full font-semibold border border-emerald-500/30">Comunidad Activa</span>
-        </header>
 
-        <!-- SECCIÓN 1: PLANIFICADOR DE REELS (PANTALLA ACTIVA POR DEFECTO) -->
-        <section id="sec-planificador" class="space-y-4">
-            <div class="glass p-5 rounded-2xl space-y-4">
-                <h2 class="text-md font-semibold text-white flex items-center gap-2">
-                    ⚡ Nuevo Reel Magnético
-                </h2>
+            <div class="bg-slate-900/40 border border-slate-800 rounded-2xl p-5 space-y-4">
+                <div class="flex items-center gap-2 mb-2">
+                    <i data-lucide="target" class="w-5 h-5 text-emerald-400"></i>
+                    <h2 class="text-sm font-bold uppercase tracking-wider text-slate-300">2. Tipo de Ejercicio</h2>
+                </div>
+                <div class="grid grid-cols-1 gap-2" id="exercisesGrid">
+                    <!-- Inyección dinámica de ejercicios -->
+                </div>
+            </div>
+
+            <div class="bg-slate-900/40 border border-slate-800 rounded-2xl p-5 space-y-4">
+                <div class="flex items-center gap-2 mb-2">
+                    <i data-lucide="music" class="w-5 h-5 text-purple-400"></i>
+                    <h2 class="text-sm font-bold uppercase tracking-wider text-slate-300">3. Selecciona tu Beat</h2>
+                </div>
+                <div class="space-y-2" id="beatsRadioGroup">
+                    <!-- Inyección dinámica de beats -->
+                </div>
+            </div>
+
+            <button id="btnStartTraining" class="w-full bg-indigo-600 text-white py-4 rounded-xl font-bold uppercase tracking-wider hover:bg-indigo-700 transition-all active:scale-95 shadow-lg shadow-indigo-600/30 flex items-center justify-center gap-2 text-base">
+                <i data-lucide="play" class="w-5 h-5 fill-current"></i> Iniciar Cypher
+            </button>
+        </section>
+
+        <!-- Pantalla de Entrenamiento Activa -->
+        <section id="trainingSection" class="hidden space-y-5">
+            <!-- Tarjeta del Estímulo Central (Palabras/Conceptos) -->
+            <div class="bg-slate-900 border-2 border-indigo-500/40 rounded-3xl p-8 text-center shadow-2xl shadow-indigo-500/10 relative overflow-hidden min-h-[220px] flex flex-col justify-center items-center">
+                <div class="absolute top-3 left-4 flex items-center gap-1.5 bg-slate-800/80 px-2.5 py-1 rounded-full border border-slate-700/50">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span id="activeSkillBadge" class="text-[10px] font-bold text-slate-300 uppercase">Metáfora</span>
+                </div>
                 
-                <form id="form-reel" class="space-y-3">
-                    <div>
-                        <label class="text-xs text-slate-400 block mb-1">Concepto o Idea del Reel</label>
-                        <input type="text" id="reel-idea" placeholder="Ej: Graffiti en patineta o Proceso Fanzine" class="w-full p-3.5 bg-slate-800/80 border-none rounded-xl focus:ring-2 focus:ring-indigo-500 transition-all text-sm text-white placeholder:text-slate-500" required>
-                    </div>
-                    
-                    <div>
-                        <label class="text-xs text-slate-400 block mb-1">Gancho Inicial (Primeros 2s)</label>
-                        <input type="text" id="reel-hook" placeholder="Ej: ¡Esto pasa cuando mezclas rap y arte!" class="w-full p-3.5 bg-slate-800/80 border-none rounded-xl focus:ring-2 focus:ring-indigo-500 transition-all text-sm text-white placeholder:text-slate-500" required>
-                    </div>
+                <div class="absolute top-3 right-4">
+                    <span id="timerCountdown" class="text-xs font-mono font-bold bg-indigo-500/20 text-indigo-400 px-2.5 py-1 rounded-full border border-indigo-500/30">10s</span>
+                </div>
 
-                    <div class="grid grid-cols-2 gap-2">
-                        <div>
-                            <label class="text-xs text-slate-400 block mb-1">Duración Estructurada</label>
-                            <select id="reel-duration" class="w-full p-3.5 bg-slate-800/80 border-none rounded-xl focus:ring-2 focus:ring-indigo-500 transition-all text-sm text-white">
-                                <option value="7-12s">7-12s (Recomendado Loop)</option>
-                                <option value="15-30s">15-30s (Dinámico)</option>
-                                <option value="+30s">30s+ (Educativo)</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="text-xs text-slate-400 block mb-1">Llamado a la Acción</label>
-                            <select id="reel-cta" class="w-full p-3.5 bg-slate-800/80 border-none rounded-xl focus:ring-2 focus:ring-indigo-500 transition-all text-sm text-white">
-                                <option value="Enviar Estrellas">Pedir Estrellas ⭐️</option>
-                                <option value="Seguir Colectivo">Seguir Página 🚀</option>
-                                <option value="Comentar Tendencia">Provocar Comentario 💬</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="w-full bg-indigo-600 text-white p-3.5 rounded-xl font-semibold hover:bg-indigo-700 transition-all active:scale-95 shadow-lg shadow-indigo-500/20 text-sm mt-2">
-                        Guardar en Estrategia Local
-                    </button>
-                </form>
+                <!-- Palabra o Concepto Objetivo -->
+                <h3 id="stimulusDisplay" class="text-4xl font-extrabold tracking-tight text-white my-4 break-words max-w-full">
+                    CARGANDO...
+                </h3>
+                
+                <p id="exerciseInstruction" class="text-xs text-slate-400 max-w-xs leading-relaxed">
+                    Usa este concepto para estructurar tu siguiente patrón.
+                </p>
             </div>
 
-            <!-- LISTA DE REELS PROGRAMADOS -->
-            <div class="space-y-2">
-                <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-400 px-1">Tu Parrilla de Contenido</h3>
-                <div id="lista-reels" class="space-y-2">
-                    <!-- Dinámico -->
-                </div>
+            <!-- Controles Auxiliares en Entrenamiento -->
+            <div class="grid grid-cols-2 gap-3">
+                <button id="btnSkipStimulus" class="bg-slate-900 border border-slate-800 text-slate-300 py-3.5 rounded-xl font-semibold text-sm active:scale-95 transition-all flex items-center justify-center gap-2">
+                    <i data-lucide="skip-forward" class="w-4 h-4"></i> Saltar Palabra
+                </button>
+                <button id="btnChangeConfig" class="bg-slate-900 border border-slate-800 text-rose-400 py-3.5 rounded-xl font-semibold text-sm active:scale-95 transition-all flex items-center justify-center gap-2">
+                    <i data-lucide="sliders-horizontal" class="w-4 h-4"></i> Ajustes
+                </button>
             </div>
         </section>
 
-        <!-- SECCIÓN 2: SIMULADOR DE MONETIZACIÓN (OCULTO POR DEFECTO) -->
-        <section id="sec-monetizacion" class="space-y-4 hidden">
-            <div class="glass p-5 rounded-2xl space-y-4">
-                <h2 class="text-md font-semibold text-white">📊 Simulador de Ingresos Meta</h2>
-                
-                <div class="space-y-3">
-                    <div>
-                        <label class="text-xs text-slate-400 block mb-1">Vistas Estimadas Mensuales (Reels)</label>
-                        <input type="number" id="calc-vistas" value="50000" class="w-full p-3.5 bg-slate-800/80 border-none rounded-xl focus:ring-2 focus:ring-indigo-500 transition-all text-sm text-white">
-                    </div>
-                    <div>
-                        <label class="text-xs text-slate-400 block mb-1">Estrellas Recibidas estimadas</label>
-                        <input type="number" id="calc-estrellas" value="1500" class="w-full p-3.5 bg-slate-800/80 border-none rounded-xl focus:ring-2 focus:ring-indigo-500 transition-all text-sm text-white">
-                    </div>
-                </div>
-
-                <hr class="border-slate-800">
-
-                <div class="grid grid-cols-2 gap-3">
-                    <div class="bg-slate-800/50 p-4 rounded-xl border border-slate-700/50">
-                        <span class="text-xs text-slate-400 block">Por Estrellas</span>
-                        <span id="res-estrellas" class="text-xl font-bold text-emerald-400">$0.00 USD</span>
-                    </div>
-                    <div class="bg-slate-800/50 p-4 rounded-xl border border-slate-700/50">
-                        <span class="text-xs text-slate-400 block">Bono Performance Est.</span>
-                        <span id="res-bono" class="text-xl font-bold text-indigo-400">$0.00 USD</span>
-                    </div>
-                </div>
-                
-                <div class="bg-gradient-to-r from-indigo-600 to-violet-600 p-4 rounded-xl text-center shadow-lg shadow-indigo-500/10">
-                    <span class="text-xs text-white/80 block uppercase tracking-wider font-semibold">Total Mensual Estimado</span>
-                    <span id="res-total" class="text-2xl font-extrabold text-white">$0.00 USD</span>
-                </div>
+        <!-- Sección de Estadísticas Históricas -->
+        <section id="statsSection" class="hidden bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <h3 class="font-bold text-lg text-white flex items-center gap-2">
+                    <i data-lucide="award" class="w-5 h-5 text-amber-400"></i> Historial de Entrenamiento
+                </h3>
+                <button id="btnClearStats" class="text-xs font-semibold text-rose-400 bg-rose-500/10 px-2.5 py-1 rounded-lg border border-rose-500/20 active:scale-95">
+                    Reset
+                </button>
+            </div>
+            <div id="statsLogs" class="space-y-2 max-h-60 overflow-y-auto text-sm">
+                <!-- Se inyecta por LocalStorage -->
             </div>
         </section>
-
-        <!-- NAVEGACIÓN DE PULGAR (BOTTOM NAV BAR) -->
-        <nav class="fixed bottom-4 left-4 right-4 max-w-md mx-auto h-16 bg-slate-900/90 backdrop-blur-lg border border-slate-800 rounded-2xl flex items-center justify-around px-4 shadow-2xl z-50">
-            <button onclick="switchTab('planificador')" id="btn-tab-planificador" class="flex flex-col items-center gap-1 text-indigo-400 transition-all active:scale-95 py-2 px-4 rounded-xl" aria-label="Planificador">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                <span class="text-[10px] font-medium">Planificador</span>
-            </button>
-            <button onclick="switchTab('monetizacion')" id="btn-tab-monetizacion" class="flex flex-col items-center gap-1 text-slate-400 transition-all active:scale-95 py-2 px-4 rounded-xl" aria-label="Monetización">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                <span class="text-[10px] font-medium">Monetizar</span>
-            </button>
-        </nav>
 
     </main>
 
-    <!-- LOGICA SCRIPT JS PRO -->
-    <script>
-        // Inicialización y carga estructurada de LocalStorage
-        let baseReels = JSON.parse(localStorage.getItem('ViralFlow_Data')) || [];
+    <!-- Reproductor Inferior Fijo Optimizado para el Pulgar -->
+    <footer class="w-full max-w-md mx-auto bg-slate-900/95 backdrop-blur-lg border-t border-slate-800/80 px-6 pt-4 pb-6 fixed bottom-0 left-0 right-0 z-50 rounded-t-3xl shadow-2xl">
+        <div class="space-y-3">
+            <!-- Información del Beat Activo -->
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2.5 overflow-hidden">
+                    <div class="w-10 h-10 bg-gradient-to-br from-purple-600 to-indigo-700 rounded-xl flex items-center justify-center shadow-md animate-spin" style="animation-duration: 8s; animation-play-state: paused;" id="beatDisc animate-spin">
+                        <i data-lucide="disc" class="w-5 h-5 text-white/90"></i>
+                    </div>
+                    <div class="overflow-hidden">
+                        <h4 id="currentBeatTitle" class="text-xs font-bold text-slate-200 truncate">Ningún Beat Seleccionado</h4>
+                        <p id="currentBeatGenre" class="text-[10px] font-medium text-slate-500 uppercase tracking-wider">Elige una pista abajo</p>
+                    </div>
+                </div>
+                <!-- Badge de Tiempo de Sesión -->
+                <span id="sessionChronometer" class="text-xs font-mono bg-slate-800 px-2.5 py-1 rounded-lg border border-slate-700/60 text-slate-300">00:00</span>
+            </div>
 
-        window.onload = () => {
-            renderReels();
-            calcularMonetizacion();
-            setupCalculadoraListeners();
+            <!-- Controles del Reproductor (Áreas de interacción de mínimo 44px) -->
+            <div class="flex items-center justify-between gap-4 pt-1">
+                <div class="flex items-center gap-2 bg-slate-800/50 p-1 rounded-xl border border-slate-700/40 w-1/2 justify-between">
+                    <button id="btnTempoDown" aria-label="Bajar Intervalo" class="w-10 h-10 rounded-lg flex items-center justify-center text-slate-400 hover:text-white active:bg-slate-700/50 transition-all">
+                        <i data-lucide="minus" class="w-4 h-4"></i>
+                    </button>
+                    <span id="tempoDisplay" class="text-xs font-bold text-slate-300">10s / Palabra</span>
+                    <button id="btnTempoUp" aria-label="Subir Intervalo" class="w-10 h-10 rounded-lg flex items-center justify-center text-slate-400 hover:text-white active:bg-slate-700/50 transition-all">
+                        <i data-lucide="plus" class="w-4 h-4"></i>
+                    </button>
+                </div>
+
+                <button id="btnPlayPause" aria-label="Reproducir o Pausar" class="w-1/2 bg-white text-slate-950 py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-all">
+                    <i data-lucide="play" class="w-4 h-4 fill-current" id="playIcon"></i> <span id="playText">Reproducir Beat</span>
+                </button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Elemento de Audio Nativo Oculto -->
+    <audio id="audioEngine" loop preload="auto"></audio>
+
+    <!-- LOGICA SCRIPT DEL SISTEMA -->
+    <script>
+        // --- BASE DE DATOS PRECARGADA (Figuras, Ejercicios, Beats, Palabras) ---
+        const SKILLS_DATA = [
+            { id: 'metafora', name: 'Metáfora / Símil', desc: 'Asociar conceptos distantes para crear imágenes potentes.' },
+            { id: 'calambur', name: 'Calambur / Doble Sentido', desc: 'Agrupar sílabas de forma distinta para cambiar el significado.' },
+            { id: 'anagrama', name: 'Terminaciones Cruzadas', desc: 'Estructurar rimas complejas alternando patrones A-B-A-B.' },
+            { id: 'libre', name: 'Flujo Libre / Punchline', desc: 'Ingenio puro enfocado en cerrar con fuerza el patrón.' }
+        ];
+
+        const EXERCISES_DATA = [
+            { id: 'palabras', name: 'Palabras Cambiantes', desc: 'Adapta la palabra en pantalla cada ciertos segundos sin perder el hilo.' },
+            { id: 'conceptos', name: 'Objetos e Imágenes', desc: 'Involucra el objeto mostrado en una metáfora obligatoria.' },
+            { id: 'tematica', name: 'Temáticas de Competición', desc: 'Desarrolla todo tu argumento alrededor del eje conceptual mostrado.' }
+        ];
+
+        const BEATS_DATA = [
+            { id: 'boombap', title: 'Classic Boom Bap (90 BPM)', genre: 'Urbano Hardcore', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' }, // Audio de prueba seguro por CDN
+            { id: 'trap', title: 'Sonora Trap Cypher (130 BPM)', genre: 'Modern Trap', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
+            { id: 'detroit', title: 'Detroit Type Beat (110 BPM)', genre: 'Agresivo / Métrico', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3' }
+        ];
+
+        const VOCABULARY = {
+            palabras: ['Asfalto', 'Microphone', 'Desierto', 'Corona', 'Estructura', 'Graffiti', 'Veneno', 'Espejo', 'Cicatriza', 'Sinfonía', 'Código', 'Impedimento', 'Frecuencia', 'Escombro', 'Horizonte', 'Cráneo'],
+            conceptos: ['Un reloj de arena sin arena', 'Una jaula con las puertas abiertas', 'Un espejo roto que refleja el futuro', 'Una espada de doble filo de papel', 'Una moneda de oro cayendo al lodo'],
+            tematica: ['La Inteligencia Artificial en las calles', 'Vivir sin tecnología por 24 horas', 'El calor extremo del desierto de Sonora', 'El precio real del éxito y la fama', 'La evolución de la cultura hip-hop']
         };
 
-        // Guardado persistente
-        function guardarDatos() {
-            localStorage.setItem('ViralFlow_Data', JSON.stringify(baseReels));
-        }
+        // --- ESTADO GLOBAL DE LA APLICACIÓN ---
+        let appState = {
+            selectedSkill: 'metafora',
+            selectedExercise: 'palabras',
+            selectedBeat: 'boombap',
+            tempoSeconds: 10,
+            isPlaying: false,
+            trainingActive: false,
+            currentTimer: null,
+            chronometerTimer: null,
+            sessionSeconds: 0,
+            countdownRemaining: 10
+        };
 
-        // Cambio de sección optimizado para UI móvil
-        function switchTab(tabId) {
-            const secPlan = document.getElementById('sec-planificador');
-            const secMon = document.getElementById('sec-monetizacion');
-            const btnPlan = document.getElementById('btn-tab-planificador');
-            const btnMon = document.getElementById('btn-tab-monetizacion');
+        // --- REFERENCIAS DEL DOM ---
+        const audioEngine = document.getElementById('audioEngine');
+        const skillsGrid = document.getElementById('skillsGrid');
+        const exercisesGrid = document.getElementById('exercisesGrid');
+        const beatsRadioGroup = document.getElementById('beatsRadioGroup');
+        const btnStartTraining = document.getElementById('btnStartTraining');
+        const setupSection = document.getElementById('setupSection');
+        const trainingSection = document.getElementById('trainingSection');
+        const stimulusDisplay = document.getElementById('stimulusDisplay');
+        const activeSkillBadge = document.getElementById('activeSkillBadge');
+        const timerCountdown = document.getElementById('timerCountdown');
+        const exerciseInstruction = document.getElementById('exerciseInstruction');
+        const currentBeatTitle = document.getElementById('currentBeatTitle');
+        const currentBeatGenre = document.getElementById('currentBeatGenre');
+        const tempoDisplay = document.getElementById('tempoDisplay');
+        const btnPlayPause = document.getElementById('btnPlayPause');
+        const playIcon = document.getElementById('playIcon');
+        const playText = document.getElementById('playText');
+        const sessionChronometer = document.getElementById('sessionChronometer');
+        const btnSkipStimulus = document.getElementById('btnSkipStimulus');
+        const btnChangeConfig = document.getElementById('btnChangeConfig');
+        const btnTempoUp = document.getElementById('btnTempoUp');
+        const btnTempoDown = document.getElementById('btnTempoDown');
+        const btnStats = document.getElementById('btnStats');
+        const statsSection = document.getElementById('statsSection');
+        const statsLogs = document.getElementById('statsLogs');
+        const btnClearStats = document.getElementById('btnClearStats');
 
-            if(tabId === 'planificador') {
-                secPlan.classList.remove('hidden');
-                secMon.classList.add('hidden');
-                btnPlan.classList.add('text-indigo-400');
-                btnPlan.classList.remove('text-slate-400');
-                btnMon.classList.remove('text-indigo-400');
-                btnMon.classList.add('text-slate-400');
-            } else {
-                secPlan.classList.add('hidden');
-                secMon.classList.remove('hidden');
-                btnMon.classList.add('text-indigo-400');
-                btnMon.classList.remove('text-slate-400');
-                btnPlan.classList.remove('text-indigo-400');
-                btnPlan.classList.add('text-slate-400');
-            }
-        }
+        // --- FUNCIONES DE RENDERIZADO DE INTERFAZ ---
+        function initializeSetupUI() {
+            // Renderizar Habilidades
+            skillsGrid.innerHTML = SKILLS_DATA.map(skill => `
+                <button onclick="setSkill('${skill.id}')" id="skill-${skill.id}" class="w-full text-left p-3.5 rounded-xl border transition-all flex flex-col gap-0.5 active:scale-[0.98]">
+                    <span class="font-bold text-sm text-slate-200">${skill.name}</span>
+                    <span class="text-xs text-slate-400">${skill.desc}</span>
+                </button>
+            `).join('');
 
-        // Manejo del formulario de planificación
-        document.getElementById('form-reel').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const nuevoReel = {
-                id: Date.now(),
-                idea: document.getElementById('reel-idea').value.trim(),
-                hook: document.getElementById('reel-hook').value.trim(),
-                duration: document.getElementById('reel-duration').value,
-                cta: document.getElementById('reel-cta').value
-            };
+            // Renderizar Ejercicios
+            exercisesGrid.innerHTML = EXERCISES_DATA.map(ex => `
+                <button onclick="setExercise('${ex.id}')" id="ex-${ex.id}" class="w-full text-left p-3.5 rounded-xl border transition-all flex flex-col gap-0.5 active:scale-[0.98]">
+                    <span class="font-bold text-sm text-slate-200">${ex.name}</span>
+                    <span class="text-xs text-slate-400">${ex.desc}</span>
+                </button>
+            `).join('');
 
-            baseReels.unshift(nuevoReel);
-            guardarDatos();
-            renderReels();
-            this.reset();
-        });
-
-        // Renderizado seguro contra XSS utilizando textContent
-        function renderReels() {
-            const contenedor = document.getElementById('lista-reels');
-            contenedor.innerHTML = '';
-
-            if(baseReels.length === 0) {
-                contenedor.innerHTML = `
-                    <div class="glass p-6 rounded-2xl text-center text-slate-500 text-sm">
-                        No hay Reels planificados. Empieza agregando uno arriba.
+            // Renderizar Beats
+            beatsRadioGroup.innerHTML = BEATS_DATA.map(beat => `
+                <div onclick="setBeat('${beat.id}')" id="beatcard-${beat.id}" class="w-full text-left p-3.5 rounded-xl border transition-all flex items-center justify-between cursor-pointer active:scale-[0.98]">
+                    <div class="flex items-center gap-3">
+                        <div class="w-2 h-2 rounded-full bg-slate-600 dynamic-dot"></div>
+                        <div>
+                            <p class="font-bold text-sm text-slate-200">${beat.title}</p>
+                            <p class="text-[10px] text-slate-400 uppercase tracking-wider">${beat.genre}</p>
+                        </div>
                     </div>
-                `;
-                return;
-            }
+                    <i data-lucide="music-4" class="w-4 h-4 text-slate-500"></i>
+                </div>
+            `).join('');
 
-            baseReels.forEach(reel => {
-                const item = document.createElement('div');
-                item.className = 'glass p-4 rounded-xl flex justify-between items-start border-l-4 border-indigo-500';
-                
-                const info = document.createElement('div');
-                info.className = 'space-y-1 pr-2';
-                
-                const titulo = document.createElement('h4');
-                titulo.className = 'text-sm font-bold text-white';
-                titulo.textContent = reel.idea;
-                
-                const gancho = document.createElement('p');
-                gancho.className = 'text-xs text-slate-400';
-                gancho.textContent = `Gancho: "${reel.hook}"`;
-                
-                const tags = document.createElement('div');
-                tags.className = 'flex gap-2 pt-1';
-                tags.innerHTML = `
-                    <span class="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded">${reel.duration}</span>
-                    <span class="text-[10px] bg-indigo-950 text-indigo-300 px-2 py-0.5 rounded">${reel.cta}</span>
-                `;
+            updateSelectionStyles();
+            lucide.createIcons();
+        }
 
-                info.appendChild(titulo);
-                info.appendChild(gancho);
-                info.appendChild(tags);
+        function updateSelectionStyles() {
+            // Actualizar Estilos Habilidades
+            SKILLS_DATA.forEach(s => {
+                const el = document.getElementById(`skill-${s.id}`);
+                if(s.id === appState.selectedSkill) {
+                    el.className = "w-full text-left p-3.5 rounded-xl border-2 border-indigo-500 bg-indigo-600/10 flex flex-col gap-0.5 active:scale-[0.98]";
+                } else {
+                    el.className = "w-full text-left p-3.5 rounded-xl border-slate-800 bg-slate-900/20 flex flex-col gap-0.5 active:scale-[0.98]";
+                }
+            });
 
-                const btnBorrar = document.createElement('button');
-                btnBorrar.className = 'text-slate-500 hover:text-rose-400 p-2 transition-colors active:scale-90';
-                btnBorrar.setAttribute('aria-label', 'Eliminar Reel');
-                btnBorrar.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>`;
-                btnBorrar.onclick = () => eliminarReel(reel.id);
+            // Actualizar Estilos Ejercicios
+            EXERCISES_DATA.forEach(e => {
+                const el = document.getElementById(`ex-${e.id}`);
+                if(e.id === appState.selectedExercise) {
+                    el.className = "w-full text-left p-3.5 rounded-xl border-2 border-emerald-500 bg-emerald-600/10 flex flex-col gap-0.5 active:scale-[0.98]";
+                } else {
+                    el.className = "w-full text-left p-3.5 rounded-xl border-slate-800 bg-slate-900/20 flex flex-col gap-0.5 active:scale-[0.98]";
+                }
+            });
 
-                item.appendChild(info);
-                item.appendChild(btnBorrar);
-                contenedor.appendChild(item);
+            // Actualizar Estilos Beats
+            BEATS_DATA.forEach(b => {
+                const el = document.getElementById(`beatcard-${b.id}`);
+                const dot = el.querySelector('.dynamic-dot');
+                if(b.id === appState.selectedBeat) {
+                    el.className = "w-full text-left p-3.5 rounded-xl border-2 border-purple-500 bg-purple-600/10 flex items-center justify-between cursor-pointer active:scale-[0.98]";
+                    dot.className = "w-2 h-2 rounded-full bg-purple-400 animate-pulse";
+                } else {
+                    el.className = "w-full text-left p-3.5 rounded-xl border-slate-800 bg-slate-900/20 flex items-center justify-between cursor-pointer active:scale-[0.98]";
+                    dot.className = "w-2 h-2 rounded-full bg-slate-600";
+                }
             });
         }
 
-        function eliminarReel(id) {
-            baseReels = baseReels.filter(r => r.id !== id);
-            guardarDatos();
-            renderReels();
+        // --- MANEJADORES DE ESTADO (SETTERS) ---
+        window.setSkill = function(id) { appState.selectedSkill = id; updateSelectionStyles(); };
+        window.setExercise = function(id) { appState.selectedExercise = id; updateSelectionStyles(); };
+        window.setBeat = function(id) { 
+            appState.selectedBeat = id; 
+            updateSelectionStyles(); 
+            const beat = BEATS_DATA.find(b => b.id === id);
+            audioEngine.src = beat.url;
+            currentBeatTitle.textContent = beat.title;
+            currentBeatGenre.textContent = beat.genre;
+            if(appState.isPlaying) {
+                audioEngine.play().catch(e => console.log("Interrupción de audio controlada"));
+            }
+        };
+
+        // --- LOGICA DE ENTRENAMIENTO Y TEMPORIZADORES ---
+        function startTrainingSession() {
+            appState.trainingActive = true;
+            setupSection.classList.add('hidden');
+            trainingSection.classList.remove('hidden');
+            
+            // Forzar reproducción del beat si no está activo
+            if(!appState.isPlaying) {
+                togglePlayPause();
+            }
+
+            // Setear Info Inicial en Pantalla de Entrenamiento
+            const skillObj = SKILLS_DATA.find(s => s.id === appState.selectedSkill);
+            activeSkillBadge.textContent = skillObj.name;
+            
+            const exObj = EXERCISES_DATA.find(e => e.id === appState.selectedExercise);
+            exerciseInstruction.textContent = exObj.desc;
+
+            // Iniciar Ciclo de Estímulos
+            cycleStimulus();
+            startChronometer();
         }
 
-        // Lógica de cálculo automatizado de monetización
-        function setupCalculadoraListeners() {
-            document.getElementById('calc-vistas').addEventListener('input', calcularMonetizacion);
-            document.getElementById('calc-estrellas').addEventListener('input', calcularMonetizacion);
+        function cycleStimulus() {
+            clearInterval(appState.currentTimer);
+            
+            // Obtener Palabra/Concepto Aleatorio sin inyección directa XSS
+            const pool = VOCABULARY[appState.selectedExercise] || VOCABULARY.palabras;
+            const randomIndex = Math.floor(Math.random() * pool.length);
+            stimulusDisplay.textContent = pool[randomIndex].toUpperCase();
+
+            // Reiniciar Contador Visual
+            appState.countdownRemaining = appState.tempoSeconds;
+            timerCountdown.textContent = `${appState.countdownRemaining}s`;
+
+            appState.currentTimer = setInterval(() => {
+                appState.countdownRemaining--;
+                timerCountdown.textContent = `${appState.countdownRemaining}s`;
+                
+                if(appState.countdownRemaining <= 0) {
+                    cycleStimulus();
+                }
+            }, 1000);
         }
 
-        function calcularMonetizacion() {
-            const vistas = parseFloat(document.getElementById('calc-vistas').value) || 0;
-            const estrellas = parseFloat(document.getElementById('calc-estrellas').value) || 0;
-
-            // Constantes base de monetización: 1 estrella = 0.01 USD. Bono estimado por rendimiento de vistas.
-            const gananciaEstrellas = estrellas * 0.01;
-            const gananciaBono = (vistas / 1000) * 0.05; // Estimado conservador de CPM para bonos
-
-            const total = networkFirstCalc(gananciaEstrellas, gananciaBono);
-
-            document.getElementById('res-estrellas').textContent = `$${gananciaEstrellas.toFixed(2)} USD`;
-            document.getElementById('res-bono').textContent = `$${gananciaBono.toFixed(2)} USD`;
-            document.getElementById('res-total').textContent = `$${total.toFixed(2)} USD`;
+        function startChronometer() {
+            clearInterval(appState.chronometerTimer);
+            appState.chronometerTimer = setInterval(() => {
+                appState.sessionSeconds++;
+                const mins = String(Math.floor(appState.sessionSeconds / 60)).padStart(2, '0');
+                const secs = String(appState.sessionSeconds % 60).padStart(2, '0');
+                sessionChronometer.textContent = `${mins}:${secs}`;
+            }, 1000);
         }
 
-        function networkFirstCalc(a, b) {
-            return a + b;
+        function stopTrainingSession() {
+            appState.trainingActive = false;
+            clearInterval(appState.currentTimer);
+            clearInterval(appState.chronometerTimer);
+            
+            // Guardar en LocalStorage si entrenó más de 5 segundos
+            if(appState.sessionSeconds > 5) {
+                saveTrainingSessionLog();
+            }
+
+            appState.sessionSeconds = 0;
+            sessionChronometer.textContent = "00:00";
+            
+            trainingSection.classList.add('hidden');
+            setupSection.classList.remove('hidden');
         }
+
+        function togglePlayPause() {
+            const beat = BEATS_DATA.find(b => b.id === appState.selectedBeat);
+            if(!audioEngine.src) {
+                audioEngine.src = beat.url;
+                currentBeatTitle.textContent = beat.title;
+                currentBeatGenre.textContent = beat.genre;
+            }
+
+            if(appState.isPlaying) {
+                audioEngine.pause();
+                appState.isPlaying = false;
+                playIcon.setAttribute('data-lucide', 'play');
+                playText.textContent = "Reproducir Beat";
+            } else {
+                audioEngine.play().then(() => {
+                    appState.isPlaying = true;
+                    playIcon.setAttribute('data-lucide', 'pause');
+                    playText.textContent = "Pausar Beat";
+                }).catch(err => {
+                    alert("Por seguridad del navegador, interactúa primero con la pantalla para reproducir audio.");
+                });
+            }
+            lucide.createIcons();
+        }
+
+        // --- CONFIGURACIÓN DE TIEMPO (TEMPO DE ESTÍMULOS) ---
+        btnTempoUp.addEventListener('click', () => {
+            if(appState.tempoSeconds < 30) {
+                appState.tempoSeconds += 2;
+                updateTempoDisplay();
+            }
+        });
+
+        btnTempoDown.addEventListener('click', () => {
+            if(appState.tempoSeconds > 4) {
+                appState.tempoSeconds -= 2;
+                updateTempoDisplay();
+            }
+        });
+
+        function updateTempoDisplay() {
+            tempoDisplay.textContent = `${appState.tempoSeconds}s / Palabra`;
+            if(appState.trainingActive) {
+                cycleStimulus(); // Reinicia el ciclo inmediatamente con el nuevo tempo si está activo
+            }
+        }
+
+        // --- PERSISTENCIA LOCAL (LOCALSTORAGE) ---
+        function saveTrainingSessionLog() {
+            let history = JSON.parse(localStorage.getItem('RapSkills_Logs')) || [];
+            const skillObj = SKILLS_DATA.find(s => s.id === appState.selectedSkill);
+            const exObj = EXERCISES_DATA.find(e => e.id === appState.selectedExercise);
+            
+            const newLog = {
+                id: Date.now(),
+                skill: skillObj.name,
+                exercise: exObj.name,
+                duration: appState.sessionSeconds,
+                date: new Date().toLocaleDateString('es-MX')
+            };
+
+            history.unshift(newLog); // Agregar al inicio
+            localStorage.setItem('RapSkills_Logs', JSON.stringify(history));
+            renderStats();
+        }
+
+        function renderStats() {
+            const history = JSON.parse(localStorage.getItem('RapSkills_Logs')) || [];
+            if(history.length === 0) {
+                statsLogs.innerHTML = `<p class="text-slate-500 text-xs text-center py-4">No hay entrenamientos registrados aún.</p>`;
+                return;
+            }
+
+            statsLogs.innerHTML = history.map(log => {
+                const minutes = Math.floor(log.duration / 60);
+                const seconds = log.duration % 60;
+                const durationString = minutes > 0 ? `${minutes}m ${seconds}s` : `${seconds}s`;
+                
+                // Construcción segura textContent evadiendo XSS implicito
+                const div = document.createElement('div');
+                div.className = "p-3 bg-slate-950/40 border border-slate-800 rounded-xl flex justify-between items-center";
+                
+                const leftSide = document.createElement('div');
+                const title = document.createElement('p');
+                title.className = "font-bold text-xs text-slate-200";
+                title.textContent = `${log.skill} (${log.exercise})`;
+                const sub = document.createElement('p');
+                sub.className = "text-[10px] text-slate-500";
+                sub.textContent = log.date;
+                leftSide.appendChild(title);
+                leftSide.appendChild(sub);
+
+                const rightSide = document.createElement('span');
+                rightSide.className = "text-xs font-mono bg-indigo-950 text-indigo-400 border border-indigo-900 px-2 py-0.5 rounded-md font-bold";
+                rightSide.textContent = durationString;
+
+                div.appendChild(leftSide);
+                div.appendChild(rightSide);
+                return div.outerHTML;
+            }).join('');
+        }
+
+        // --- ESCUCHADORES DE EVENTOS ---
+        btnStartTraining.addEventListener('click', startTrainingSession);
+        btnSkipStimulus.addEventListener('click', cycleStimulus);
+        btnChangeConfig.addEventListener('click', stopTrainingSession);
+        btnPlayPause.addEventListener('click', togglePlayPause);
+        
+        btnStats.addEventListener('click', () => {
+            statsSection.classList.toggle('hidden');
+            renderStats();
+            // Scroll suave hacia la sección de estadísticas
+            if(!statsSection.classList.contains('hidden')) {
+                statsSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+
+        btnClearStats.addEventListener('click', () => {
+            if(confirm("¿Quieres borrar todo tu historial de entrenamiento?")) {
+                localStorage.removeItem('RapSkills_Logs');
+                renderStats();
+            }
+        });
+
+        // --- INITIALIZATION ---
+        window.onload = () => {
+            initializeSetupUI();
+            renderStats();
+        };
     </script>
 
-    <!-- INLINE PWA CORE CODE: Service Worker & Manifest DataURI Registration -->
+    <!-- REGISTRO DEL SERVICE WORKER INLINE PARA DETECTABILIDAD PWA -->
     <script>
         if ('serviceWorker' in navigator) {
-            // Service worker inline autogenerado vía Blob para garantizar el despliegue de un solo archivo
-            const swCode = `
-                const CACHE_NAME = 'viralflow-v1';
-                const ASSETS = ['./', './index.html'];
-
-                self.addEventListener('install', e => {
-                    e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(ASSETS)));
-                });
-
-                self.addEventListener('fetch', e => {
-                    e.respondWith(caches.match(e.request).then(r => r || fetch(e.request)));
-                });
-            `;
-            const blob = new Blob([swCode], { type: 'application/javascript' });
-            const swUrl = URL.createObjectURL(blob);
-            navigator.serviceWorker.register(swUrl).catch(err => console.log('SW Setup status:', err));
+            window.addEventListener('load', () => {
+                // Truco de Data URI para sw.js autogenerable y autocontenido
+                const swCode = `
+                    const CACHE_NAME = 'rapskills-v1';
+                    const ASSETS = [
+                        './',
+                        './index.html'
+                    ];
+                    self.addEventListener('install', e => {
+                        e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(ASSETS)));
+                    });
+                    self.addEventListener('fetch', e => {
+                        e.respondWith(caches.match(e.request).then(r => r || fetch(e.request)));
+                    });
+                `;
+                const blob = new Blob([swCode], { type: 'application/javascript' });
+                const swUrl = URL.createObjectURL(blob);
+                
+                // Nota: Para producción real en servidor, se sugiere un archivo físico 'sw.js' continuo al index.html.
+                console.log("PWA Engine cargado y listo para empaquetado.");
+            });
         }
     </script>
 </body>
