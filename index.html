@@ -22,6 +22,7 @@
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col pb-24 antialiased">
 
+    <!-- CABECERA -->
     <header class="fixed top-0 left-0 right-0 z-40 glass-nav border-b border-slate-800/80 px-4 py-3.5">
         <div class="max-w-xl mx-auto flex items-center justify-between">
             <div class="flex items-center gap-3">
@@ -34,6 +35,7 @@
                 </div>
             </div>
             
+            <!-- CONTADOR DE ACTIVACIONES REALIZADAS -->
             <div class="flex items-center gap-2">
                 <div class="bg-indigo-600/10 border border-indigo-500/30 rounded-xl px-2.5 h-10 flex items-center gap-1.5 shadow-sm">
                     <i data-lucide="check-square" class="w-4 h-4 text-indigo-400"></i>
@@ -49,12 +51,15 @@
         </div>
     </header>
 
+    <!-- NOTIFICACIÓN TOAST -->
     <div id="toast" class="hidden fixed top-20 left-1/2 transform -translate-x-1/2 z-50 bg-emerald-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-lg border border-emerald-400/30 flex items-center gap-2 transition-all">
         <i data-lucide="check-circle" class="w-4 h-4"></i> <span id="toast-text">Acción completada</span>
     </div>
 
+    <!-- CONTENEDOR CENTRAL -->
     <main class="flex-1 max-w-xl w-full mx-auto px-4 pt-24 space-y-4">
         
+        <!-- BUSCADOR -->
         <div id="search-container" class="relative">
             <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
                 <i data-lucide="search" class="w-4 h-4 text-slate-500"></i>
@@ -63,6 +68,7 @@
                 class="w-full h-11 pl-10 pr-4 bg-slate-800/40 border border-slate-800 rounded-xl text-sm placeholder-slate-500 text-white focus:outline-none focus:border-indigo-500 transition-all">
         </div>
 
+        <!-- RECIPIENTE DINÁMICO -->
         <div id="feed-container" class="space-y-4">
             <div class="animate-pulse space-y-4">
                 <div class="h-44 bg-slate-800/50 rounded-xl border border-slate-800"></div>
@@ -70,6 +76,7 @@
         </div>
     </main>
 
+    <!-- NAVEGACIÓN INFERIOR (5 Espacios) -->
     <nav class="fixed bottom-0 left-0 right-0 glass-nav border-t border-slate-800/80 z-40">
         <div class="max-w-xl mx-auto flex justify-around items-center h-18 px-1">
             <button onclick="switchTab('Periodismo')" class="section-nav flex flex-col items-center justify-center flex-1 h-14 text-indigo-400" data-section="Periodismo">
@@ -95,6 +102,7 @@
         </div>
     </nav>
 
+    <!-- VISUALIZADOR DE PÁGINAS Y MAPAS INTERNOS -->
     <div id="reader-modal" class="hidden fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex flex-col justify-end sm:justify-center p-0 sm:p-4">
         <div class="bg-slate-900 w-full max-w-3xl mx-auto h-[88vh] sm:h-[82vh] rounded-t-2xl sm:rounded-2xl border border-slate-800 flex flex-col overflow-hidden shadow-2xl">
             <div class="px-4 py-3 bg-slate-850 border-b border-slate-800 flex items-center justify-between">
@@ -128,7 +136,6 @@
             fetchData();
         });
 
-        // REFRESCAR CONTADOR DE GAMIFICACIÓN DESDE LA MEMORIA LOCAL
         function loadTaskCounter() {
             const count = localStorage.getItem('polis_completed_tasks_total') || "0";
             document.getElementById('task-counter').innerText = count;
@@ -136,22 +143,23 @@
 
         function markTaskAsDone(id) {
             const key = `task_done_${currentSection}_${id}`;
-            if (localStorage.getItem(key)) {
-                showToast("Esta acción ya sumó a tu récord.");
-                return;
-            }
+            if (localStorage.getItem(key)) return;
+            
             localStorage.setItem(key, "true");
             let total = parseInt(localStorage.getItem('polis_completed_tasks_total') || "0");
             total += 1;
             localStorage.setItem('polis_completed_tasks_total', total.toString());
             loadTaskCounter();
             showToast("¡Objetivo cumplido! Añadido a tus estadísticas ⭐");
-            renderFeed(); // Actualiza visualmente para deshabilitar o marcar la tarjeta
+            renderFeed(); 
         }
 
         async function fetchData() {
             const syncBtn = document.getElementById('sync-btn');
             if (syncBtn) syncBtn.classList.add('animate-spin');
+
+            // Limpiar datos anteriores para evitar que se mezclen secciones mientras descarga
+            feedData = []; 
 
             const cache = localStorage.getItem(`polis_advanced_cache_${currentSection}`);
             if (cache) {
@@ -160,6 +168,7 @@
             }
 
             try {
+                // El truco está aquí: Forzamos el cambio de parámetro &sheet con el nombre exacto de la pestaña actual
                 const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(currentSection)}&_ts=${Date.now()}`;
                 const response = await fetch(url);
                 if (!response.ok) throw new Error();
@@ -171,10 +180,13 @@
                     feedData = parsedData.sort((a, b) => parseInt(b.id || 0) - parseInt(a.id || 0));
                     localStorage.setItem(`polis_advanced_cache_${currentSection}`, JSON.stringify(feedData));
                     renderFeed();
+                } else {
+                    feedData = [];
+                    renderFeed();
                 }
             } catch (err) {
                 console.error("Falla de enlace de red", err);
-            } finally {
+            } {
                 if (syncBtn) syncBtn.classList.remove('animate-spin');
             }
         }
@@ -191,6 +203,7 @@
             if (row.length > 1 || row[0] !== '') lines.push(row);
             if (lines.length <= 1) return [];
 
+            // Limpieza dinámica de cabeceras de la pestaña en turno
             const headers = lines[0].map(h => h.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, ""));
             const jsonArray = [];
 
@@ -220,7 +233,7 @@
             });
 
             if (filtered.length === 0) {
-                container.innerHTML = `<div class="text-center py-16 text-slate-600 text-xs">No hay elementos configurados bajo este segmento.</div>`;
+                container.innerHTML = `<div class="text-center py-16 text-slate-600 text-xs">No hay elementos guardados en la pestaña "${currentSection}" de tu Google Sheets.</div>`;
                 return;
             }
 
@@ -251,7 +264,7 @@
                 let imageHTML = img ? `<div class="w-full max-h-64 rounded-lg overflow-hidden border border-slate-700/50 bg-slate-900"><img src="${escapeHTML(img)}" class="w-full h-full object-cover"></div>` : "";
                 let actionsHTML = "";
 
-                // LOGICA EN BASE AL TAB SELECCIONADO
+                // FILTRADO DE INTERFAZ EXCLUSIVO POR SECCIÓN
                 if (currentSection === "Periodismo") {
                     actionsHTML = `
                         <div class="grid grid-cols-2 gap-2">
@@ -290,7 +303,6 @@
                     `;
                 }
                 else if (currentSection === "Materiales") {
-                    // SECCIÓN PASO 4: MATERIALES PERMANENTES
                     actionsHTML = `
                         <div class="grid grid-cols-2 gap-2">
                             <a href="${escapeHTML(link)}" target="_blank" rel="noopener noreferrer" class="h-10 rounded-lg bg-slate-800 border border-slate-700 hover:bg-slate-700 text-white text-xs font-bold flex items-center justify-center gap-1.5 transition-all">
@@ -303,7 +315,6 @@
                     `;
                 }
                 else if (currentSection === "Mapas") {
-                    // SECCIÓN DE DESPLIEGUE GEOGRÁFICO DE HERMOSILLO
                     actionsHTML = `
                         <div class="space-y-2">
                             <button onclick="openReaderModal('${escapeHTML(link)}', '${escapeHTML(fuente)}')" class="w-full h-11 rounded-lg bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-md">
@@ -319,7 +330,7 @@
                         ${currentSection !== "Materiales" && currentSection !== "Mapas" ? `
                             <span class="flex items-center gap-1 text-[10px] font-bold border px-2 py-0.5 rounded-md ${badgeColor}"><i data-lucide="${icon}" class="w-3 h-3"></i> ${pfm}</span>
                         ` : `
-                            <span class="flex items-center gap-1 text-[10px] font-bold border border-indigo-500/30 bg-indigo-500/10 text-indigo-400 px-2 py-0.5 rounded-md"><i data-lucide="folder" class="w-3 h-3"></i> Fijo</span>
+                            <span class="flex items-center gap-1 text-[10px] font-bold border border-indigo-500/30 bg-indigo-500/10 text-indigo-400 px-2 py-0.5 rounded-md"><i data-lucide="folder" class="w-3 h-3"></i> Interno</span>
                         `}
                     </div>
                     ${imageHTML}
@@ -336,7 +347,7 @@
         }
 
         function copyTextToClipboard(text, successMessage) {
-            if (!text || text === "") { alert("No hay datos disponibles para copiar."); return; }
+            if (!text || text === "") return;
             if (!navigator.clipboard) {
                 const textArea = document.createElement("textarea"); textArea.value = text;
                 textArea.style.position = "fixed"; document.body.appendChild(textArea);
@@ -355,7 +366,7 @@
         }
 
         function openReaderModal(url, fuente) {
-            if(!url || url === "") { alert("Este registro no contiene un enlace de visualización."); return; }
+            if(!url || url === "") return;
             document.getElementById("modal-source-badge").innerText = `Zona: ${fuente}`;
             document.getElementById("news-frame").src = url;
             document.getElementById("reader-modal").classList.remove("hidden");
@@ -374,10 +385,10 @@
                 else n.classList.replace("text-indigo-400", "text-slate-400");
             });
             
-            // Ocultar buscador si entramos a mapas para dar más aire visual
             if (s === "Mapas") document.getElementById("search-container").classList.add("hidden");
             else document.getElementById("search-container").classList.remove("hidden");
 
+            // Ejecuta la descarga limpia de la hoja seleccionada
             fetchData();
         }
 
