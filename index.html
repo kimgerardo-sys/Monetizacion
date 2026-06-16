@@ -2,491 +2,318 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RapSkills Pro - Sonora Cypher Lab</title>
-    <meta name="theme-color" content="#0f172a">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>AgoraPolis - Campañas & Coyuntura</title>
+    
+    <!-- Meta tags nativos PWA -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#0f172a">
     
+    <!-- Manifest en línea -->
+    <link rel="manifest" href="data:application/json;base64,ewogICJkZWZhdWx0X2xvY2FsZSI6ICJlcyIsCiAgIm5hbWUiOiAiQWdvcmFQb2xpcyBNZWRpb3MiLAogICJzaG9ydF9uYW1lIjogIkFnb3JhUG9saXMiLAogICJkZXNjcmlwdGlvbiI6ICJIdWIgZGUgcGVyaW9kaXNtbyBpbmRlcGVuZGllbnRlIHkgYXNlc29yw61hIHBvbMOtdGljYSIsCiAgInN0YW5kYWxvbmUiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzBmMTcyYSIsCiAgInRoZW1lX2NvbG9yIjogIiMwZjE3MmEiLAogICpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJodHRwczovL2ltZy5pY29uczguY29tL2ZsdWVudHkvNTEyL2dvdmVybm1lbnQucG5nIiwKICAgICAgInNpemVzIjogIjUxMng1MTIiLAogICAgICAidHlwZSI6ICJpbWFnZS9wbmciCiAgICB9CiAgXQp9">
+
+    <!-- CDNs estables -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
-        html, body {
-            overflow: hidden;
-            position: fixed;
-            width: 100%;
-            height: 100%;
+        .glass-nav {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
         }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 flex flex-col justify-between min-h-screen">
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col pb-24 antialiased">
 
-    <header class="w-full max-w-md mx-auto bg-slate-900/90 backdrop-blur-md border-b border-slate-800/60 px-6 py-4 flex items-center justify-between z-50 fixed top-0 left-0 right-0">
-        <div class="flex items-center gap-2">
-            <div class="p-2 bg-amber-600 rounded-xl shadow-lg shadow-amber-500/30">
-                <i data-lucide="mic" class="w-5 h-5 text-white"></i>
+    <!-- HEADER SUPERIOR -->
+    <header class="fixed top-0 left-0 right-0 z-50 glass-nav border-b border-slate-800 px-4 py-3.5">
+        <div class="max-w-md mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-600 flex items-center justify-center border border-indigo-500/30 shadow-lg shadow-indigo-500/20">
+                    <i data-lucide="megaphone" class="w-5 h-5 text-white"></i>
+                </div>
+                <div>
+                    <h1 class="text-base font-bold tracking-tight text-white">AgoraPolis</h1>
+                    <p class="text-[10px] text-indigo-400 font-bold tracking-wider uppercase">Operación & Estrategia</p>
+                </div>
             </div>
-            <div>
-                <h1 class="text-lg font-extrabold tracking-tight text-white flex items-center gap-1.5">
-                    RAPSKILLS <span class="text-xs px-2 py-0.5 bg-amber-500/20 text-amber-400 rounded-full font-semibold border border-amber-500/30">SONORA</span>
-                </h1>
-                <p class="text-[10px] text-slate-400 uppercase tracking-widest font-semibold">Desierto & Estructuras</p>
-            </div>
+            <!-- Botón Sincronizar de 44x44px táctil -->
+            <button id="sync-btn" onclick="fetchData()" class="w-11 h-11 rounded-xl bg-slate-800/80 hover:bg-slate-800 border border-slate-700 flex items-center justify-center transition-all active:scale-95" aria-label="Sincronizar datos">
+                <i data-lucide="refresh-cw" class="w-4 h-4 text-slate-300"></i>
+            </button>
         </div>
-        <button id="btnStats" class="p-3 bg-slate-800/60 rounded-xl border border-slate-700/50 active:scale-95 transition-all">
-            <i data-lucide="bar-chart-3" class="w-5 h-5 text-amber-400"></i>
-        </button>
     </header>
 
-    <main class="w-full max-w-md mx-auto flex-1 overflow-y-auto pt-24 pb-32 px-4 space-y-5">
+    <!-- MAIN CONTAINER -->
+    <main class="flex-1 max-w-md w-full mx-auto px-4 pt-24 space-y-5">
         
-        <section id="setupSection" class="space-y-5">
-            <div class="bg-slate-900/40 border border-slate-800 rounded-2xl p-5 space-y-4">
-                <div class="flex items-center gap-2 mb-1">
-                    <i data-lucide="zap" class="w-5 h-5 text-amber-400"></i>
-                    <h2 class="text-sm font-bold uppercase tracking-wider text-slate-300">1. Habilidad Lingüística</h2>
-                </div>
-                <div class="grid grid-cols-1 gap-2" id="skillsGrid"></div>
-            </div>
+        <!-- BUSCADOR CON DEBOUNCE IMPLÍCITO -->
+        <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
+                <i data-lucide="search" class="w-4 h-4 text-slate-500"></i>
+            </span>
+            <input type="text" id="search-bar" oninput="renderFeed()" placeholder="Buscar aviso, medio o palabra clave..." 
+                class="w-full h-12 pl-10 pr-4 bg-slate-800/40 border border-slate-800 rounded-xl text-sm placeholder-slate-500 text-white focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all">
+        </div>
 
-            <div class="bg-slate-900/40 border border-slate-800 rounded-2xl p-5 space-y-4">
-                <div class="flex items-center gap-2 mb-1">
-                    <i data-lucide="target" class="w-5 h-5 text-emerald-400"></i>
-                    <h2 class="text-sm font-bold uppercase tracking-wider text-slate-300">2. Ejercicio de Práctica</h2>
-                </div>
-                <div class="grid grid-cols-1 gap-2" id="exercisesGrid"></div>
-            </div>
-
-            <div class="bg-slate-900/40 border border-slate-800 rounded-2xl p-5 space-y-4">
-                <div class="flex items-center gap-2 mb-1">
-                    <i data-lucide="disc" class="w-5 h-5 text-purple-400"></i>
-                    <h2 class="text-sm font-bold uppercase tracking-wider text-slate-300">3. Ritmo Boom Bap Hip-Hop</h2>
-                </div>
-                <div class="space-y-2" id="beatsRadioGroup"></div>
-            </div>
-
-            <button id="btnStartTraining" class="w-full bg-amber-600 text-white py-4 rounded-xl font-bold uppercase tracking-wider hover:bg-amber-700 transition-all active:scale-95 shadow-lg shadow-amber-600/30 flex items-center justify-center gap-2 text-base">
-                <i data-lucide="play" class="w-5 h-5 fill-current"></i> Iniciar Entrenamiento
+        <!-- FILTROS POR PLATAFORMA / TIPO (Thumb-friendly scrolling) -->
+        <div class="flex gap-2 overflow-x-auto hide-scrollbar py-1">
+            <button onclick="setPlatformFilter('all')" class="platform-tab px-4 h-9 rounded-xl text-xs font-semibold whitespace-nowrap transition-all bg-indigo-600 text-white" data-platform="all">
+                Todo el flujo
             </button>
-        </section>
+            <button onclick="setPlatformFilter('Aviso')" class="platform-tab px-4 h-9 rounded-xl text-xs font-semibold whitespace-nowrap transition-all bg-slate-800 text-slate-400 border border-slate-800/60" data-platform="Aviso">
+                <i data-lucide="alert-circle" class="w-3.5 h-3.5 inline mr-1"></i> Avisos / Invitaciones
+            </button>
+            <button onclick="setPlatformFilter('Web')" class="platform-tab px-4 h-9 rounded-xl text-xs font-semibold whitespace-nowrap transition-all bg-slate-800 text-slate-400 border border-slate-800/60" data-platform="Web">
+                <i data-lucide="globe" class="w-3.5 h-3.5 inline mr-1"></i> Portales
+            </button>
+            <button onclick="setPlatformFilter('Newsletter')" class="platform-tab px-4 h-9 rounded-xl text-xs font-semibold whitespace-nowrap transition-all bg-slate-800 text-slate-400 border border-slate-800/60" data-platform="Newsletter">
+                <i data-lucide="mail" class="w-3.5 h-3.5 inline mr-1"></i> Newsletters
+            </button>
+            <button onclick="setPlatformFilter('X')" class="platform-tab px-4 h-9 rounded-xl text-xs font-semibold whitespace-nowrap transition-all bg-slate-800 text-slate-400 border border-slate-800/60" data-platform="X">
+                <i data-lucide="twitter" class="w-3.5 h-3.5 inline mr-1"></i> X (Twitter)
+            </button>
+        </div>
 
-        <section id="trainingSection" class="hidden space-y-4">
-            <div class="bg-slate-900 border-2 border-amber-500/40 rounded-3xl p-6 text-center shadow-2xl shadow-amber-500/5 relative overflow-hidden min-h-[200px] flex flex-col justify-center items-center">
-                <div class="absolute top-3 left-4 flex items-center gap-1.5 bg-slate-800/80 px-2.5 py-1 rounded-full border border-slate-700/50">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span id="activeSkillBadge" class="text-[10px] font-bold text-slate-300 uppercase">Metáfora</span>
-                </div>
-                
-                <div class="absolute top-3 right-4">
-                    <span id="timerCountdown" class="text-xs font-mono font-bold bg-amber-500/20 text-amber-400 px-2.5 py-1 rounded-full border border-amber-500/30">10s</span>
-                </div>
-
-                <h3 id="stimulusDisplay" class="text-4xl font-extrabold tracking-tight text-amber-400 my-6 break-words max-w-full uppercase">
-                    CARGANDO...
-                </h3>
-            </div>
-
-            <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 space-y-3">
-                <div class="flex items-center gap-2 text-emerald-400 border-b border-slate-800 pb-2">
-                    <i data-lucide="help-circle" class="w-4 h-4"></i>
-                    <h4 class="text-xs font-bold uppercase tracking-wider">Guía del Ejercicio</h4>
-                </div>
-                <div class="space-y-2">
-                    <div>
-                        <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-tight">¿Qué debes hacer?</p>
-                        <p id="exerciseInstruction" class="text-xs text-slate-200 leading-relaxed"></p>
-                    </div>
-                    <div class="bg-slate-950/60 p-3 rounded-xl border border-slate-800/60">
-                        <p class="text-[10px] font-bold text-amber-500 uppercase tracking-wider mb-1">Ejemplo de Barra Real:</p>
-                        <p id="exerciseExample" class="text-xs italic text-slate-300 font-serif leading-relaxed"></p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-3">
-                <button id="btnSkipStimulus" class="bg-slate-900 border border-slate-800 text-slate-300 py-3.5 rounded-xl font-semibold text-sm active:scale-95 flex items-center justify-center gap-2">
-                    <i data-lucide="skip-forward" class="w-4 h-4"></i> Siguiente Palabra
-                </button>
-                <button id="btnChangeConfig" class="bg-slate-900 border border-slate-800 text-rose-400 py-3.5 rounded-xl font-semibold text-sm active:scale-95 flex items-center justify-center gap-2">
-                    <i data-lucide="sliders-horizontal" class="w-4 h-4"></i> Terminar Sesión
-                </button>
-            </div>
-        </section>
-
-        <section id="statsSection" class="hidden bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-4">
-            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-                <h3 class="font-bold text-lg text-white flex items-center gap-2">
-                    <i data-lucide="award" class="w-5 h-5 text-amber-400"></i> Bitácora de Barras
-                </h3>
-                <button id="btnClearStats" class="text-xs font-semibold text-rose-400 bg-rose-500/10 px-2.5 py-1 rounded-lg border border-rose-500/20 active:scale-95">Reset</button>
-            </div>
-            <div id="statsLogs" class="space-y-2 max-h-60 overflow-y-auto text-sm"></div>
-        </section>
-
-    </main>
-
-    <footer class="w-full max-w-md mx-auto bg-slate-900/95 backdrop-blur-lg border-t border-slate-800/80 px-6 pt-4 pb-6 fixed bottom-0 left-0 right-0 z-50 rounded-t-3xl shadow-2xl">
-        <div class="space-y-3">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2.5 overflow-hidden">
-                    <div class="w-10 h-10 bg-gradient-to-br from-amber-600 to-amber-800 rounded-xl flex items-center justify-center shadow-md" id="beatDisc">
-                        <i data-lucide="disc" class="w-5 h-5 text-white/90"></i>
-                    </div>
-                    <div class="overflow-hidden">
-                        <h4 id="currentBeatTitle" class="text-xs font-bold text-slate-200 truncate">Ningún Beat Seleccionado</h4>
-                        <p id="currentBeatGenre" class="text-[10px] font-medium text-slate-500 uppercase tracking-wider">Boom Bap Instrumentals</p>
-                    </div>
-                </div>
-                <span id="sessionChronometer" class="text-xs font-mono bg-slate-800 px-2.5 py-1 rounded-lg border border-slate-700/60 text-slate-300">00:00</span>
-            </div>
-
-            <div class="flex items-center justify-between gap-4 pt-1">
-                <div class="flex items-center gap-2 bg-slate-800/50 p-1 rounded-xl border border-slate-700/40 w-1/2 justify-between">
-                    <button id="btnTempoDown" class="w-10 h-10 rounded-lg flex items-center justify-center text-slate-400 hover:text-white active:bg-slate-700/50">
-                        <i data-lucide="minus" class="w-4 h-4"></i>
-                    </button>
-                    <span id="tempoDisplay" class="text-xs font-bold text-slate-300">10s / Palabra</span>
-                    <button id="btnTempoUp" class="w-10 h-10 rounded-lg flex items-center justify-center text-slate-400 hover:text-white active:bg-slate-700/50">
-                        <i data-lucide="plus" class="w-4 h-4"></i>
-                    </button>
-                </div>
-
-                <button id="btnPlayPause" class="w-1/2 bg-white text-slate-950 py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-all">
-                    <i data-lucide="play" class="w-4 h-4 fill-current" id="playIcon"></i> <span id="playText">Activar Ritmo</span>
-                </button>
+        <!-- CONTENEDOR DE TARJETAS -->
+        <div id="feed-container" class="space-y-4">
+            <!-- Esqueleto de carga -->
+            <div class="animate-pulse space-y-4">
+                <div class="h-36 bg-slate-800/40 rounded-xl border border-slate-800"></div>
+                <div class="h-36 bg-slate-800/40 rounded-xl border border-slate-800"></div>
             </div>
         </div>
-    </footer>
+    </main>
 
-    <audio id="audioEngine" loop preload="auto"></audio>
+    <!-- NAVEGACIÓN INFERIOR (ZONA DEL PULGAR - Mínimo 44px) -->
+    <nav class="fixed bottom-0 left-0 right-0 glass-nav border-t border-slate-800/80 z-50">
+        <div class="max-w-md mx-auto flex justify-around items-center h-20">
+            <button onclick="switchTab('Periodismo')" class="section-nav flex flex-col items-center justify-center w-20 h-14 text-indigo-400" data-section="Periodismo">
+                <i data-lucide="newspaper" class="w-5 h-5 mb-1"></i>
+                <span class="text-[10px] font-bold tracking-wide">Periodismo</span>
+            </button>
+            <button onclick="switchTab('Analisis')" class="section-nav flex flex-col items-center justify-center w-20 h-14 text-slate-400" data-section="Analisis">
+                <i data-lucide="pie-chart" class="w-5 h-5 mb-1"></i>
+                <span class="text-[10px] font-bold tracking-wide">Análisis</span>
+            </button>
+            <button onclick="switchTab('Consultoria')" class="section-nav flex flex-col items-center justify-center w-20 h-14 text-slate-400" data-section="Consultoria">
+                <i data-lucide="users" class="w-5 h-5 mb-1"></i>
+                <span class="text-[10px] font-bold tracking-wide">Asesores</span>
+            </button>
+        </div>
+    </nav>
 
+    <!-- LÓGICA JAVASCRIPT MASTER -->
     <script>
-        // --- BASE DE DATOS LINGÜÍSTICA Y FIGURAS ---
-        const SKILLS_DATA = [
-            { id: 'metafora', name: 'Metáfora y Símil', desc: 'Conectar ideas distintas usando analogías directas o indirectas.' },
-            { id: 'calambur', name: 'Calambur (Doble Sentido)', desc: 'Modificar la agrupación de las sílabas para crear dos palabras distintas.' },
-            { id: 'retruecano', name: 'Retruécano (Inversión)', desc: 'Repetir una frase invirtiendo el orden de las palabras para cambiar el sentido.' },
-            { id: 'libre', name: 'Punchline Libre', desc: 'Ingenio y remate contundente usando conceptos locales.' }
-        ];
+        // URL de tu implementación de Google Apps Script (Colocar aquí al enlazar a producción)
+        const API_URL = ""; 
 
-        // --- EJERCICIOS EXPLICADOS CON INSTRUCCIONES Y EJEMPLOS REALES (#1) ---
-        const EXERCISES_DATA = [
-            { 
-                id: 'palabras', 
-                name: 'Modo Estímulo Sonorense', 
-                desc: 'Integra obligatoriamente la palabra regional que aparece en pantalla dentro de tus próximas rimas antes de que cambie el cronómetro.',
-                example: '"Me dicen el bichi porque ando sin filtros en el Microphone, / rompiendo la tarima de Hermosillo directo hasta tu cantón."'
-            },
-            { 
-                id: 'conceptos', 
-                name: 'Comparativa de Entorno', 
-                desc: 'Compara tu estilo, tu nivel o la situación de tu rival con el concepto o locación de Sonora que se muestra en pantalla.',
-                example: '"Mi mente quema más barras que el sol de San Luis Río Colorado, / tú eres agua helada en el desierto, por eso ya te has evaporado."'
-            },
-            { 
-                id: 'situacional', 
-                name: 'Eje Temático Local', 
-                desc: 'No uses la palabra suelta; desarrolla todo un argumento, historia o ataque basado en la situación o lugar sonorense indicado.',
-                example: '"Esto es como viajar en camión de Obregón en pleno verano sin refrigeración: / una tortura total para tu ego cuando te tiro mi mejor improvisación."'
-            }
-        ];
+        let currentSection = "Periodismo";
+        let currentPlatform = "all";
+        let feedData = [];
 
-        // --- 3 TRACKS DE RITMO PURO BOOM BAP HIP-HOP (#3) ---
-        const BEATS_DATA = [
-            { id: 'bb_classic', title: 'Boom Bap Old School (90 BPM)', genre: 'Hip Hop Clásico', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
-            { id: 'bb_90s', title: 'Underground Street Beat (88 BPM)', genre: '90s Grit & Vinyl', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-            { id: 'bb_jazz', title: 'Lofi Jazz Boom Bap (92 BPM)', genre: 'Métrico & Relajado', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' }
-        ];
-
-        // --- BANCO GRANDE DE PALABRAS Y REGIONALISMOS DE SONORA (#2) ---
-        const VOCABULARY = {
-            palabras: [
-                'Bichi', 'Chilo', 'Machín', 'Morro', 'Cantón', 'Cahuamanta', 'Pitahaya', 'Fierro', 'Teco', 'Bato',
-                'Plebe', 'Cura', 'Cheve', 'Malilla', 'Sahuaro', 'Pápago', 'Yaqui', 'Seri', 'Pitiquito', 'Tiburón',
-                'Chubasco', 'Canícula', 'Desierto', 'Cochis', 'Tacuache', 'Pinto', 'Carrucha', 'Huila', 'Estoraque',
-                'Mesquite', 'Bacánora', 'Machaca', 'Chiltepín', 'Asfalto', 'Estilo', 'Tarima', 'Lírica', 'Estructura'
-            ],
-            conceptos: [
-                'Cerro de la Campana', 'Un dogo con todo', 'El calor de 48 grados', 'Playa de Kino en invierno',
-                'Un camión lleno por el bulevar', 'Estación de camiones de Obregón', 'Las dunas de San Luis',
-                'Una hielera con hielo seco', 'Un sombrero vaquero en el cypher', 'La línea de Nogales'
-            ],
-            situacional: [
-                'Un domingo familiar en la Plaza Zaragoza', 'Quedarse tirado sin gasolina en la carretera a Guaymas',
-                'Comer coyotas recién hechas en Villa de Seris', 'Un cypher bajo la sombra de un tejabán',
-                'Soportar un apagón de luz a mitad de julio', 'Cruzar la frontera caminando a las 3 AM'
-            ]
-        };
-
-        // --- ESTADO DE LA APP ---
-        let appState = {
-            selectedSkill: 'metafora',
-            selectedExercise: 'palabras',
-            selectedBeat: 'bb_classic',
-            tempoSeconds: 10,
-            isPlaying: false,
-            trainingActive: false,
-            currentTimer: null,
-            chronometerTimer: null,
-            sessionSeconds: 0,
-            countdownRemaining: 10,
-            lastIndices: { palabras: [], conceptos: [], situacional: [] } // Evita repeticiones continuas
-        };
-
-        // --- REFERENCIAS DOM ---
-        const audioEngine = document.getElementById('audioEngine');
-        const skillsGrid = document.getElementById('skillsGrid');
-        const exercisesGrid = document.getElementById('exercisesGrid');
-        const beatsRadioGroup = document.getElementById('beatsRadioGroup');
-        const btnStartTraining = document.getElementById('btnStartTraining');
-        const setupSection = document.getElementById('setupSection');
-        const trainingSection = document.getElementById('trainingSection');
-        const stimulusDisplay = document.getElementById('stimulusDisplay');
-        const activeSkillBadge = document.getElementById('activeSkillBadge');
-        const timerCountdown = document.getElementById('timerCountdown');
-        const exerciseInstruction = document.getElementById('exerciseInstruction');
-        const exerciseExample = document.getElementById('exerciseExample');
-        const currentBeatTitle = document.getElementById('currentBeatTitle');
-        const currentBeatGenre = document.getElementById('currentBeatGenre');
-        const tempoDisplay = document.getElementById('tempoDisplay');
-        const btnPlayPause = document.getElementById('btnPlayPause');
-        const playIcon = document.getElementById('playIcon');
-        const playText = document.getElementById('playText');
-        const sessionChronometer = document.getElementById('sessionChronometer');
-        const btnSkipStimulus = document.getElementById('btnSkipStimulus');
-        const btnChangeConfig = document.getElementById('btnChangeConfig');
-        const btnTempoUp = document.getElementById('btnTempoUp');
-        const btnTempoDown = document.getElementById('btnTempoDown');
-        const btnStats = document.getElementById('btnStats');
-        const statsSection = document.getElementById('statsSection');
-        const statsLogs = document.getElementById('statsLogs');
-        const btnClearStats = document.getElementById('btnClearStats');
-        const beatDisc = document.getElementById('beatDisc');
-
-        // --- INICIALIZACIÓN DE SELECCIONES ---
-        function initUI() {
-            skillsGrid.innerHTML = SKILLS_DATA.map(s => `
-                <button onclick="setSkill('${s.id}')" id="skill-${s.id}" class="w-full text-left p-3.5 rounded-xl border flex flex-col gap-0.5 active:scale-[0.98]">
-                    <span class="font-bold text-sm text-slate-200">${s.name}</span>
-                    <span class="text-xs text-slate-400">${s.desc}</span>
-                </button>
-            `).join('');
-
-            exercisesGrid.innerHTML = EXERCISES_DATA.map(e => `
-                <button onclick="setExercise('${e.id}')" id="ex-${e.id}" class="w-full text-left p-3.5 rounded-xl border flex flex-col gap-0.5 active:scale-[0.98]">
-                    <span class="font-bold text-sm text-slate-200">${e.name}</span>
-                    <span class="text-xs text-slate-400 truncate">${e.desc}</span>
-                </button>
-            `).join('');
-
-            beatsRadioGroup.innerHTML = BEATS_DATA.map(b => `
-                <div onclick="setBeat('${b.id}')" id="beatcard-${b.id}" class="w-full text-left p-3.5 rounded-xl border flex items-center justify-between cursor-pointer active:scale-[0.98]">
-                    <div class="flex items-center gap-3">
-                        <div class="w-2 h-2 rounded-full bg-slate-600 dot-indicator"></div>
-                        <div>
-                            <p class="font-bold text-sm text-slate-200">${b.title}</p>
-                            <p class="text-[10px] text-slate-400 uppercase tracking-wider">${b.genre}</p>
-                        </div>
-                    </div>
-                    <i data-lucide="music" class="w-4 h-4 text-slate-500"></i>
-                </div>
-            `).join('');
-
-            updateStyles();
+        document.addEventListener("DOMContentLoaded", () => {
             lucide.createIcons();
-        }
+            fetchData();
+        });
 
-        function updateStyles() {
-            SKILLS_DATA.forEach(s => {
-                document.getElementById(`skill-${s.id}`).className = s.id === appState.selectedSkill 
-                    ? "w-full text-left p-3.5 rounded-xl border-2 border-amber-500 bg-amber-600/10 flex flex-col gap-0.5"
-                    : "w-full text-left p-3.5 rounded-xl border-slate-800 bg-slate-900/20 flex flex-col gap-0.5";
-            });
+        async function fetchData() {
+            const syncBtn = document.getElementById('sync-btn');
+            if (syncBtn) syncBtn.classList.add('animate-spin');
 
-            EXERCISES_DATA.forEach(e => {
-                document.getElementById(`ex-${e.id}`).className = e.id === appState.selectedExercise 
-                    ? "w-full text-left p-3.5 rounded-xl border-2 border-emerald-500 bg-emerald-600/10 flex flex-col gap-0.5"
-                    : "w-full text-left p-3.5 rounded-xl border-slate-800 bg-slate-900/20 flex flex-col gap-0.5";
-            });
-
-            BEATS_DATA.forEach(b => {
-                const el = document.getElementById(`beatcard-${b.id}`);
-                const dot = el.querySelector('.dot-indicator');
-                if(b.id === appState.selectedBeat) {
-                    el.className = "w-full text-left p-3.5 rounded-xl border-2 border-purple-500 bg-purple-600/10 flex items-center justify-between cursor-pointer";
-                    dot.className = "w-2 h-2 rounded-full bg-purple-400 animate-pulse";
-                } else {
-                    el.className = "w-full text-left p-3.5 rounded-xl border-slate-800 bg-slate-900/20 flex items-center justify-between cursor-pointer";
-                    dot.className = "w-2 h-2 rounded-full bg-slate-600";
-                }
-            });
-        }
-
-        window.setSkill = function(id) { appState.selectedSkill = id; updateStyles(); };
-        window.setExercise = function(id) { appState.selectedExercise = id; updateStyles(); };
-        window.setBeat = function(id) { 
-            appState.selectedBeat = id; 
-            updateStyles(); 
-            const beat = BEATS_DATA.find(b => b.id === id);
-            audioEngine.src = beat.url;
-            currentBeatTitle.textContent = beat.title;
-            if(appState.isPlaying) audioEngine.play().catch(() => {});
-        };
-
-        // --- SISTEMA INTERNO ANTI-REPETICIÓN DE VOCABULARIO (#2) ---
-        function getUniqueRandomStimulus(type) {
-            const pool = VOCABULARY[type];
-            let history = appState.lastIndices[type];
-            
-            // Si el historial está lleno o cubre más de la mitad, saca el más viejo
-            if (history.length >= Math.floor(pool.length / 2)) {
-                history.shift();
+            const cache = localStorage.getItem(`polis_camp_cache_${currentSection}`);
+            if (cache) {
+                feedData = JSON.parse(cache);
+                renderFeed();
             }
 
-            let availableIndices = [];
-            for (let i = 0; i < pool.length; i++) {
-                if (!history.includes(i)) availableIndices.push(i);
-            }
-
-            const randomIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
-            history.push(randomIndex);
-            return pool[randomIndex];
-        }
-
-        // --- CONTROL DE ENTRENAMIENTO ---
-        function startTraining() {
-            appState.trainingActive = true;
-            setupSection.classList.add('hidden');
-            trainingSection.classList.remove('hidden');
-
-            if(!appState.isPlaying) togglePlayPause();
-
-            const skill = SKILLS_DATA.find(s => s.id === appState.selectedSkill);
-            activeSkillBadge.textContent = skill.name;
-
-            const ex = EXERCISES_DATA.find(e => e.id === appState.selectedExercise);
-            exerciseInstruction.textContent = ex.desc;
-            exerciseExample.textContent = ex.example;
-
-            runTimer();
-            startChronometer();
-        }
-
-        function runTimer() {
-            clearInterval(appState.currentTimer);
-            stimulusDisplay.textContent = getUniqueRandomStimulus(appState.selectedExercise);
-            
-            appState.countdownRemaining = appState.tempoSeconds;
-            timerCountdown.textContent = `${appState.countdownRemaining}s`;
-
-            appState.currentTimer = setInterval(() => {
-                appState.countdownRemaining--;
-                timerCountdown.textContent = `${appState.countdownRemaining}s`;
-                if(appState.countdownRemaining <= 0) runTimer();
-            }, 1000);
-        }
-
-        function startChronometer() {
-            clearInterval(appState.chronometerTimer);
-            appState.chronometerTimer = setInterval(() => {
-                appState.sessionSeconds++;
-                const m = String(Math.floor(appState.sessionSeconds / 60)).padStart(2, '0');
-                const s = String(appState.sessionSeconds % 60).padStart(2, '0');
-                sessionChronometer.textContent = `${m}:${s}`;
-            }, 1000);
-        }
-
-        function stopTraining() {
-            appState.trainingActive = false;
-            clearInterval(appState.currentTimer);
-            clearInterval(appState.chronometerTimer);
-            if(appState.sessionSeconds > 3) saveLog();
-            appState.sessionSeconds = 0;
-            sessionChronometer.textContent = "00:00";
-            trainingSection.classList.add('hidden');
-            setupSection.classList.remove('hidden');
-        }
-
-        function togglePlayPause() {
-            const beat = BEATS_DATA.find(b => b.id === appState.selectedBeat);
-            if(!audioEngine.src) {
-                audioEngine.src = beat.url;
-                currentBeatTitle.textContent = beat.title;
-            }
-
-            if(appState.isPlaying) {
-                audioEngine.pause();
-                appState.isPlaying = false;
-                playIcon.setAttribute('data-lucide', 'play');
-                playText.textContent = "Activar Ritmo";
-                beatDisc.classList.remove('animate-spin');
-            } else {
-                audioEngine.play().then(() => {
-                    appState.isPlaying = true;
-                    playIcon.setAttribute('data-lucide', 'pause');
-                    playText.textContent = "Pausar Ritmo";
-                    beatDisc.classList.add('animate-spin');
-                    beatDisc.style.animationDuration = '4s';
-                }).catch(() => {
-                    alert("Toca la pantalla primero para activar el sistema de reproducción de audio.");
-                });
-            }
-            lucide.createIcons();
-        }
-
-        // --- MANEJO DE TEMPO ---
-        btnTempoUp.addEventListener('click', () => { if(appState.tempoSeconds < 20) { appState.tempoSeconds += 2; updateTempo(); } });
-        btnTempoDown.addEventListener('click', () => { if(appState.tempoSeconds > 4) { appState.tempoSeconds -= 2; updateTempo(); } });
-        function updateTempo() {
-            tempoDisplay.textContent = `${appState.tempoSeconds}s / Palabra`;
-            if(appState.trainingActive) runTimer();
-        }
-
-        // --- REGISTROS Y LOCALSTORAGE ---
-        function saveLog() {
-            let logs = JSON.parse(localStorage.getItem('SonoraRap_Logs')) || [];
-            logs.unshift({
-                skill: SKILLS_DATA.find(s => s.id === appState.selectedSkill).name,
-                exercise: EXERCISES_DATA.find(e => e.id === appState.selectedExercise).name,
-                time: appState.sessionSeconds,
-                date: new Date().toLocaleDateString('es-MX')
-            });
-            localStorage.setItem('SonoraRap_Logs', JSON.stringify(logs));
-            renderLogs();
-        }
-
-        function renderLogs() {
-            const logs = JSON.parse(localStorage.getItem('SonoraRap_Logs')) || [];
-            if(!logs.length) {
-                statsLogs.innerHTML = `<p class="text-slate-500 text-xs text-center py-4">No hay sesiones grabadas esta semana.</p>`;
+            if (!API_URL) {
+                setTimeout(() => {
+                    feedData = getCampaignMockData(currentSection);
+                    localStorage.setItem(`polis_camp_cache_${currentSection}`, JSON.stringify(feedData));
+                    renderFeed();
+                    if (syncBtn) syncBtn.classList.remove('animate-spin');
+                }, 600);
                 return;
             }
-            statsLogs.innerHTML = logs.map(l => `
-                <div class="p-3 bg-slate-950/40 border border-slate-800 rounded-xl flex justify-between items-center">
-                    <div>
-                        <p class="font-bold text-xs text-slate-200">${l.skill}</p>
-                        <p class="text-[10px] text-slate-500">${l.date} • ${l.exercise}</p>
-                    </div>
-                    <span class="text-xs font-mono bg-amber-950 text-amber-400 border border-amber-900 px-2 py-0.5 rounded font-bold">${l.time}s</span>
-                </div>
-            `).join('');
+
+            try {
+                const response = await fetch(`${API_URL}?seccion=${currentSection}`);
+                if (!response.ok) throw new Error("Error en red");
+                const data = await response.json();
+                if (Array.isArray(data)) {
+                    feedData = data;
+                    localStorage.setItem(`polis_camp_cache_${currentSection}`, JSON.stringify(feedData));
+                    renderFeed();
+                }
+            } catch (err) {
+                console.error("Modo local o fuera de línea activo:", err);
+            } finally {
+                if (syncBtn) syncBtn.classList.remove('animate-spin');
+            }
         }
 
-        // --- ESCUCHADORES ---
-        btnStartTraining.addEventListener('click', startTraining);
-        btnSkipStimulus.addEventListener('click', runTimer);
-        btnChangeConfig.addEventListener('click', stopTraining);
-        btnPlayPause.addEventListener('click', togglePlayPause);
-        btnStats.addEventListener('click', () => { statsSection.classList.toggle('hidden'); renderLogs(); });
-        btnClearStats.addEventListener('click', () => { if(confirm("¿Borrar bitácora?")) { localStorage.removeItem('SonoraRap_Logs'); renderLogs(); } });
+        function renderFeed() {
+            const container = document.getElementById("feed-container");
+            container.innerHTML = "";
+            const searchVal = document.getElementById("search-bar").value.toLowerCase();
 
-        window.onload = initUI;
+            const filtered = feedData.filter(item => {
+                const platformMatch = (currentPlatform === "all" || item.tematica.trim() === currentPlatform);
+                const searchMatch = item.titulo.toLowerCase().includes(searchVal) || 
+                                    item.resumen.toLowerCase().includes(searchVal) ||
+                                    item.fuente.toLowerCase().includes(searchVal);
+                return platformMatch && searchMatch;
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="flex flex-col items-center justify-center py-16 text-slate-600 text-center">
+                        <i data-lucide="folder-open" class="w-8 h-8 mb-2 stroke-[1.5]"></i>
+                        <p class="text-xs font-medium">Sin contenido o avisos registrados en esta sección.</p>
+                    </div>`;
+                lucide.createIcons();
+                return;
+            }
+
+            filtered.forEach(item => {
+                const card = document.createElement("div");
+                const pfm = item.tematica.trim();
+                
+                // Sanitización estricta anti-XSS
+                const cleanTitle = escapeHTML(item.titulo);
+                const cleanResumen = escapeHTML(item.resumen);
+                const cleanFuente = escapeHTML(item.fuente);
+                const cleanLink = encodeURI(item.link || "");
+                const cleanImg = item.imagen ? encodeURI(item.imagen.trim()) : "";
+
+                // Cambiar el estilo visual completo si es un aviso importante del equipo
+                if (pfm === "Aviso") {
+                    card.className = "bg-gradient-to-br from-amber-500/10 to-orange-500/5 border border-amber-500/30 rounded-xl p-4 flex flex-col space-y-3 relative overflow-hidden shadow-md shadow-amber-500/5";
+                } else {
+                    card.className = "bg-slate-800/30 border border-slate-800/80 rounded-xl p-4 flex flex-col space-y-3 transition-all";
+                }
+
+                // Configuración de Badges e Iconos según temática
+                let platformIcon = "globe";
+                let badgeStyle = "bg-slate-800 text-slate-300 border-slate-700";
+
+                if (pfm === "Aviso") { platformIcon = "alert-circle"; badgeStyle = "bg-amber-500/20 text-amber-400 border-amber-500/30"; }
+                else if (pfm === "X") { platformIcon = "twitter"; badgeStyle = "bg-sky-500/10 text-sky-400 border-sky-500/20"; }
+                else if (pfm === "Instagram") { platformIcon = "instagram"; badgeStyle = "bg-pink-500/10 text-pink-400 border-pink-500/20"; }
+                else if (pfm === "Facebook") { platformIcon = "facebook"; badgeStyle = "bg-blue-500/10 text-blue-400 border-blue-500/20"; }
+                else if (pfm === "Newsletter") { platformIcon = "mail"; badgeStyle = "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"; }
+
+                // Lógica de inyección de imagen / flyer
+                let imageHTML = "";
+                if (cleanImg) {
+                    imageHTML = `<div class="w-full max-h-48 rounded-lg overflow-hidden border border-slate-700/50 bg-slate-900 flex items-center justify-center">
+                                    <img src="${cleanImg}" alt="Flyer Informativo" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.style.display='none'">
+                                 </div>`;
+                }
+
+                // Condicional para renderizar el botón de acción si existe link válido
+                let actionButtonHTML = "";
+                if (cleanLink && cleanLink !== "undefined" && cleanLink !== "") {
+                    let buttonText = "Analizar fuente original";
+                    if (pfm === "Newsletter") buttonText = "Leer newsletter corporativo";
+                    if (pfm === "Aviso") buttonText = "Confirmar asistencia / Ver enlace";
+                    
+                    actionButtonHTML = `
+                        <a href="${cleanLink}" target="_blank" rel="noopener noreferrer" 
+                           class="w-full h-11 rounded-lg bg-slate-800 hover:bg-indigo-600 text-white text-xs font-semibold flex items-center justify-center gap-2 border border-slate-700/50 transition-all active:scale-95">
+                            ${buttonText} <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+                        </a>
+                    `;
+                }
+
+                card.innerHTML = `
+                    <div class="space-y-2.5">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[11px] font-bold text-indigo-400 uppercase tracking-wider">${cleanFuente}</span>
+                            <span class="flex items-center gap-1 text-[10px] font-bold border px-2 py-0.5 rounded-md ${badgeStyle}">
+                                <i data-lucide="${platformIcon}" class="w-3 h-3"></i> ${pfm}
+                            </span>
+                        </div>
+                        ${imageHTML}
+                        <h2 class="text-sm font-bold text-white leading-snug">${cleanTitle}</h2>
+                        <p class="text-xs text-slate-400 leading-relaxed">${cleanResumen}</p>
+                    </div>
+                    ${actionButtonHTML}
+                `;
+                container.appendChild(card);
+            });
+            lucide.createIcons();
+        }
+
+        function setPlatformFilter(platform) {
+            currentPlatform = platform;
+            document.querySelectorAll(".platform-tab").forEach(tab => {
+                if(tab.getAttribute("data-platform") === platform) {
+                    tab.className = "platform-tab px-4 h-9 rounded-xl text-xs font-semibold whitespace-nowrap transition-all bg-indigo-600 text-white";
+                } else {
+                    tab.className = "platform-tab px-4 h-9 rounded-xl text-xs font-semibold whitespace-nowrap transition-all bg-slate-800 text-slate-400 border border-slate-800/60";
+                }
+            });
+            renderFeed();
+        }
+
+        function switchTab(section) {
+            currentSection = section;
+            document.querySelectorAll(".section-nav").forEach(nav => {
+                if(nav.getAttribute("data-section") === section) {
+                    nav.classList.replace("text-slate-400", "text-indigo-400");
+                } else {
+                    nav.classList.replace("text-indigo-400", "text-slate-400");
+                }
+            });
+            fetchData();
+        }
+
+        function escapeHTML(str) {
+            return str.replace(/[&<>'"]/g, t => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[t] || t));
+        }
+
+        // Simulación local de datos mixtos (Avisos institucionales, imágenes y links)
+        function getCampaignMockData(sec) {
+            const mock = {
+                Periodismo: [
+                    { id: 101, titulo: "¡CONVOCATORIA ABIERTA! Laboratorio de Comunicación Política Juvenil", tematica: "Aviso", fuente: "Coordinación", resumen: "Atención equipo y jóvenes interesados: este jueves cerramos registros para el taller intensivo de Media Training. No requiere link externo, asistan directo a la sala b del instituto.", link: "", imagen: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&auto=format&fit=crop&q=60" },
+                    { id: 102, titulo: "Lanzamiento oficial de la plataforma de monitoreo independiente", tematica: "Newsletter", fuente: "Agora Newsletter", resumen: "En nuestra edición número 14 desglosamos las pautas clave para vigilar la transparencia presupuestal en redes sociales estatales.", link: "https://google.com", imagen: "" }
+                ],
+                Analisis: [
+                    { id: 201, titulo: "URGENTE: Reunión de análisis de métricas digitales del mes", tematica: "Aviso", fuente: "Estrategia", resumen: "Miembros del equipo de campaña: Nos vemos a las 5:00 PM vía Zoom para revisar los picos de interacción del último debate de jóvenes.", link: "https://zoom.us", imagen: "" },
+                    { id: 202, titulo: "Infografía: Consumo de medios digitales en jóvenes de 18 a 29 años", tematica: "Instagram", fuente: "@DataElectoral_Son", resumen: "Los datos arrojan que el 74% prefiere formatos de video vertical de menos de 30 segundos sobre propuestas públicas.", link: "https://instagram.com", imagen: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500&auto=format&fit=crop&q=60" }
+                ],
+                Consultoria: [
+                    { id: 301, titulo: "Manual de Activismo Digital y Campañas Limpias para Equipos de Tierra", tematica: "Web", fuente: "Manuales ABC", resumen: "Documento indispensable de consulta rápida sobre ética comunicativa y contrarrestración de rumores en territorio.", link: "https://google.com", imagen: "" }
+                ]
+            };
+            return mock[sec] || [];
+        }
+    </script>
+
+    <!-- SERVICE WORKER INTERNO -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            const swCode = `
+                const CACHE_NAME = 'agora-camp-cache-v1';
+                const ASSETS = [ '/', '/index.html', 'https://cdn.tailwindcss.com', 'https://unpkg.com/lucide@latest' ];
+                self.addEventListener('install', (e) => { e.waitUntil(caches.open(CACHE_NAME).then((c) => c.addAll(ASSETS))); });
+                self.addEventListener('fetch', (e) => { e.respondWith(caches.match(e.request).then((res) => res || fetch(e.request))); });
+            `;
+            const blob = new Blob([swCode], { type: 'application/javascript' });
+            navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(err => console.log('SW Fail:', err));
+        }
     </script>
 </body>
 </html>
