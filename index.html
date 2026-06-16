@@ -22,7 +22,6 @@
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col pb-24 antialiased">
 
-    <!-- CABECERA -->
     <header class="fixed top-0 left-0 right-0 z-40 glass-nav border-b border-slate-800/80 px-4 py-3.5">
         <div class="max-w-xl mx-auto flex items-center justify-between">
             <div class="flex items-center gap-3">
@@ -31,11 +30,10 @@
                 </div>
                 <div>
                     <h1 class="text-base font-bold tracking-tight text-white">Búnker Digital</h1>
-                    <p id="current-tab-title" class="text-[10px] text-indigo-400 font-bold tracking-wider uppercase">Periodismo</p>
+                    <p id="current-tab-title" class="text-[10px] text-indigo-400 font-bold tracking-wider uppercase">Periodismo (Webs y Blogs)</p>
                 </div>
             </div>
             
-            <!-- CONTADOR DE ACTIVACIONES REALIZADAS -->
             <div class="flex items-center gap-2">
                 <div class="bg-indigo-600/10 border border-indigo-500/30 rounded-xl px-2.5 h-10 flex items-center gap-1.5 shadow-sm">
                     <i data-lucide="check-square" class="w-4 h-4 text-indigo-400"></i>
@@ -44,22 +42,19 @@
                         <p id="task-counter" class="text-xs font-bold text-white leading-none mt-0.5">0</p>
                     </div>
                 </div>
-                <button id="sync-btn" onclick="fetchData()" class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center transition-all active:scale-95" aria-label="Sincronizar">
+                <button id="sync-btn" onclick="fetchData()" class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center transition-all active:scale-95">
                     <i data-lucide="refresh-cw" class="w-4 h-4 text-slate-300"></i>
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- NOTIFICACIÓN TOAST -->
     <div id="toast" class="hidden fixed top-20 left-1/2 transform -translate-x-1/2 z-50 bg-emerald-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-lg border border-emerald-400/30 flex items-center gap-2 transition-all">
         <i data-lucide="check-circle" class="w-4 h-4"></i> <span id="toast-text">Acción completada</span>
     </div>
 
-    <!-- CONTENEDOR CENTRAL -->
     <main class="flex-1 max-w-xl w-full mx-auto px-4 pt-24 space-y-4">
         
-        <!-- BUSCADOR -->
         <div id="search-container" class="relative">
             <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
                 <i data-lucide="search" class="w-4 h-4 text-slate-500"></i>
@@ -68,7 +63,6 @@
                 class="w-full h-11 pl-10 pr-4 bg-slate-800/40 border border-slate-800 rounded-xl text-sm placeholder-slate-500 text-white focus:outline-none focus:border-indigo-500 transition-all">
         </div>
 
-        <!-- RECIPIENTE DINÁMICO -->
         <div id="feed-container" class="space-y-4">
             <div class="animate-pulse space-y-4">
                 <div class="h-44 bg-slate-800/50 rounded-xl border border-slate-800"></div>
@@ -76,18 +70,17 @@
         </div>
     </main>
 
-    <!-- NAVEGACIÓN INFERIOR (5 Espacios) -->
     <nav class="fixed bottom-0 left-0 right-0 glass-nav border-t border-slate-800/80 z-40">
         <div class="max-w-xl mx-auto flex justify-around items-center h-18 px-1">
             <button onclick="switchTab('Periodismo')" class="section-nav flex flex-col items-center justify-center flex-1 h-14 text-indigo-400" data-section="Periodismo">
                 <i data-lucide="newspaper" class="w-4.5 h-4.5 mb-1"></i>
                 <span class="text-[9px] font-bold tracking-tight">Periodismo</span>
             </button>
-            <button onclick="switchTab('Analisis')" class="section-nav flex flex-col items-center justify-center flex-1 h-14 text-slate-400" data-section="Analisis">
+            <button onclick="switchTab('Tendencias')" class="section-nav flex flex-col items-center justify-center flex-1 h-14 text-slate-400" data-section="Tendencias">
                 <i data-lucide="trending-up" class="w-4.5 h-4.5 mb-1"></i>
                 <span class="text-[9px] font-bold tracking-tight">Tendencias</span>
             </button>
-            <button onclick="switchTab('Consultoria')" class="section-nav flex flex-col items-center justify-center flex-1 h-14 text-slate-400" data-section="Consultoria">
+            <button onclick="switchTab('Estrategia')" class="section-nav flex flex-col items-center justify-center flex-1 h-14 text-slate-400" data-section="Estrategia">
                 <i data-lucide="award" class="w-4.5 h-4.5 mb-1"></i>
                 <span class="text-[9px] font-bold tracking-tight">Estrategia</span>
             </button>
@@ -102,7 +95,6 @@
         </div>
     </nav>
 
-    <!-- VISUALIZADOR DE PÁGINAS Y MAPAS INTERNOS -->
     <div id="reader-modal" class="hidden fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex flex-col justify-end sm:justify-center p-0 sm:p-4">
         <div class="bg-slate-900 w-full max-w-3xl mx-auto h-[88vh] sm:h-[82vh] rounded-t-2xl sm:rounded-2xl border border-slate-800 flex flex-col overflow-hidden shadow-2xl">
             <div class="px-4 py-3 bg-slate-850 border-b border-slate-800 flex items-center justify-between">
@@ -122,10 +114,11 @@
         let currentSection = "Periodismo"; 
         let feedData = [];
 
+        // Los títulos visuales de la cabecera
         const tabNamesVisual = {
             "Periodismo": "Periodismo (Webs y Blogs)",
-            "Analisis": "Tendencias (Redes Sociales)",
-            "Consultoria": "Estrategia (Avisos y Tareas)",
+            "Tendencias": "Tendencias (Redes Sociales)",
+            "Estrategia": "Estrategia (Avisos y Tareas)",
             "Materiales": "Materiales Permanentes e Identidad",
             "Mapas": "Cartografía y Despliegue Hermosillo"
         };
@@ -150,7 +143,7 @@
             total += 1;
             localStorage.setItem('polis_completed_tasks_total', total.toString());
             loadTaskCounter();
-            showToast("¡Objetivo cumplido! Añadido a tus estadísticas ⭐");
+            showToast("¡Objetivo cumplido! ⭐");
             renderFeed(); 
         }
 
@@ -158,17 +151,12 @@
             const syncBtn = document.getElementById('sync-btn');
             if (syncBtn) syncBtn.classList.add('animate-spin');
 
-            // Limpiar datos anteriores para evitar que se mezclen secciones mientras descarga
-            feedData = []; 
-
-            const cache = localStorage.getItem(`polis_advanced_cache_${currentSection}`);
-            if (cache) {
-                feedData = JSON.parse(cache);
-                renderFeed();
-            }
+            feedData = []; // Limpiamos la pantalla para la nueva hoja
+            const container = document.getElementById("feed-container");
+            container.innerHTML = `<div class="text-center py-12 text-slate-500 text-xs animate-pulse">Sincronizando hoja de "${currentSection}"...</div>`;
 
             try {
-                // El truco está aquí: Forzamos el cambio de parámetro &sheet con el nombre exacto de la pestaña actual
+                // Ahora llama exactamente al nombre de la sección que coincide con tu pestaña de Google Sheets
                 const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(currentSection)}&_ts=${Date.now()}`;
                 const response = await fetch(url);
                 if (!response.ok) throw new Error();
@@ -178,15 +166,15 @@
 
                 if (parsedData.length > 0) {
                     feedData = parsedData.sort((a, b) => parseInt(b.id || 0) - parseInt(a.id || 0));
-                    localStorage.setItem(`polis_advanced_cache_${currentSection}`, JSON.stringify(feedData));
                     renderFeed();
                 } else {
                     feedData = [];
                     renderFeed();
                 }
             } catch (err) {
-                console.error("Falla de enlace de red", err);
-            } {
+                console.error("Error al descargar la pestaña", err);
+                container.innerHTML = `<div class="text-center py-12 text-rose-400 text-xs">Error de conexión. Verifica que la pestaña "${currentSection}" exista exactamente con ese nombre y tenga datos.</div>`;
+            } finally {
                 if (syncBtn) syncBtn.classList.remove('animate-spin');
             }
         }
@@ -203,7 +191,6 @@
             if (row.length > 1 || row[0] !== '') lines.push(row);
             if (lines.length <= 1) return [];
 
-            // Limpieza dinámica de cabeceras de la pestaña en turno
             const headers = lines[0].map(h => h.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, ""));
             const jsonArray = [];
 
@@ -233,7 +220,7 @@
             });
 
             if (filtered.length === 0) {
-                container.innerHTML = `<div class="text-center py-16 text-slate-600 text-xs">No hay elementos guardados en la pestaña "${currentSection}" de tu Google Sheets.</div>`;
+                container.innerHTML = `<div class="text-center py-16 text-slate-600 text-xs">No encontramos filas o contenido en la hoja "${currentSection}".<br><span class="text-slate-500 text-[11px]">Asegúrate de escribir los datos debajo de las columnas correctas en Google Sheets.</span></div>`;
                 return;
             }
 
@@ -253,7 +240,7 @@
 
                 card.className = isCompleted 
                     ? "bg-slate-800/10 border border-slate-800/40 opacity-60 rounded-xl p-4 flex flex-col space-y-3 transition-all" 
-                    : "bg-slate-800/40 border border-slate-800/80 rounded-xl p-4 flex flex-col space-y-3 transition-all shadow-md shadow-slate-950/10";
+                    : "bg-slate-800/40 border border-slate-800/80 rounded-xl p-4 flex flex-col space-y-3 transition-all shadow-md";
 
                 let icon = "globe"; let badgeColor = "bg-slate-800 text-slate-300 border-slate-700";
                 if (pfm === "Facebook") { icon = "facebook"; badgeColor = "bg-blue-500/10 text-blue-400 border-blue-500/20"; }
@@ -264,40 +251,40 @@
                 let imageHTML = img ? `<div class="w-full max-h-64 rounded-lg overflow-hidden border border-slate-700/50 bg-slate-900"><img src="${escapeHTML(img)}" class="w-full h-full object-cover"></div>` : "";
                 let actionsHTML = "";
 
-                // FILTRADO DE INTERFAZ EXCLUSIVO POR SECCIÓN
+                // FILTRADO ESTRICTO DE BOTONES SEGÚN LA HOJA ACTIVA
                 if (currentSection === "Periodismo") {
                     actionsHTML = `
                         <div class="grid grid-cols-2 gap-2">
                             <button onclick="openReaderModal('${escapeHTML(link)}', '${escapeHTML(fuente)}')" class="h-10 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition-all">
                                 <i data-lucide="book-open" class="w-3.5 h-3.5"></i> Ver Nota
                             </button>
-                            <button onclick="copyTextToClipboard('${escapeHTML(link)}', '¡Enlace copiado de forma veloz!'); markTaskAsDone('${id}')" class="h-10 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold flex items-center justify-center gap-1.5 border border-slate-700/60 transition-all">
-                                <i data-lucide="share-2" class="w-3.5 h-3.5"></i> Copiar y Compartir
+                            <button onclick="copyTextToClipboard('${escapeHTML(link)}', '¡Enlace copiado!'); markTaskAsDone('${id}')" class="h-10 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold flex items-center justify-center gap-1.5 border border-slate-700/60 transition-all">
+                                <i data-lucide="share-2" class="w-3.5 h-3.5"></i> Copiar Link
                             </button>
                         </div>
                     `;
                 } 
-                else if (currentSection === "Analisis") {
+                else if (currentSection === "Tendencias") {
                     actionsHTML = `
                         <div class="space-y-2">
                             <a href="${escapeHTML(link)}" target="_blank" rel="noopener noreferrer" onclick="markTaskAsDone('${id}')" class="w-full h-11 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-md">
-                                <i data-lucide="external-link" class="w-4 h-4"></i> Penetrar en Redes (${pfm})
+                                <i data-lucide="external-link" class="w-4 h-4"></i> Abrir en ${pfm} para Interactuar
                             </a>
                         </div>
                     `;
                 } 
-                else if (currentSection === "Consultoria") {
+                else if (currentSection === "Estrategia") {
                     let copyFlyerBtn = img ? `
-                        <button onclick="copyTextToClipboard('${escapeHTML(img)}', '¡Enlace de flyer copiado al portapapeles!'); markTaskAsDone('${id}')" class="w-full h-10 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold flex items-center justify-center gap-1.5 transition-all">
-                            <i data-lucide="image" class="w-3.5 h-3.5"></i> Descargar/Copiar Flyer
+                        <button onclick="copyTextToClipboard('${escapeHTML(img)}', '¡Enlace de flyer copiado!'); markTaskAsDone('${id}')" class="w-full h-10 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold flex items-center justify-center gap-1.5 transition-all">
+                            <i data-lucide="image" class="w-3.5 h-3.5"></i> Copiar Link del Flyer
                         </button>
                     ` : "";
                     
                     actionsHTML = `
                         <div class="flex flex-col space-y-2">
                             ${copyFlyerBtn}
-                            <button onclick="copyTextToClipboard('${escapeHTML(resumen)}', 'Texto táctico copiado con éxito.'); markTaskAsDone('${id}')" class="w-full h-10 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold flex items-center justify-center gap-1.5 border border-slate-700/60 transition-all">
-                                <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copiar Instrucción Completa
+                            <button onclick="copyTextToClipboard('${escapeHTML(resumen)}', 'Instrucción copiada.'); markTaskAsDone('${id}')" class="w-full h-10 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold flex items-center justify-center gap-1.5 border border-slate-700/60 transition-all">
+                                <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copiar Texto de Tarea
                             </button>
                         </div>
                     `;
@@ -306,10 +293,10 @@
                     actionsHTML = `
                         <div class="grid grid-cols-2 gap-2">
                             <a href="${escapeHTML(link)}" target="_blank" rel="noopener noreferrer" class="h-10 rounded-lg bg-slate-800 border border-slate-700 hover:bg-slate-700 text-white text-xs font-bold flex items-center justify-center gap-1.5 transition-all">
-                                <i data-lucide="download-cloud" class="w-3.5 h-3.5"></i> Descargar Archivo
+                                <i data-lucide="download-cloud" class="w-3.5 h-3.5"></i> Ver/Descargar
                             </a>
-                            <button onclick="copyTextToClipboard('${escapeHTML(link)}', '¡Enlace institucional copiado!')" class="h-10 rounded-lg bg-slate-800 border border-slate-700 hover:bg-slate-700 text-slate-200 text-xs font-semibold flex items-center justify-center gap-1.5 transition-all">
-                                <i data-lucide="copy" class="w-3.5 h-3.5"></i> Compartir Acceso
+                            <button onclick="copyTextToClipboard('${escapeHTML(link)}', '¡Enlace copiado!')" class="h-10 rounded-lg bg-slate-800 border border-slate-700 hover:bg-slate-700 text-slate-200 text-xs font-semibold flex items-center justify-center gap-1.5 transition-all">
+                                <i data-lucide="copy" class="w-3.5 h-3.5"></i> Compartir
                             </button>
                         </div>
                     `;
@@ -318,7 +305,7 @@
                     actionsHTML = `
                         <div class="space-y-2">
                             <button onclick="openReaderModal('${escapeHTML(link)}', '${escapeHTML(fuente)}')" class="w-full h-11 rounded-lg bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-md">
-                                <i data-lucide="map" class="w-4 h-4"></i> Desplegar Mapa de Operación en HMO
+                                <i data-lucide="map" class="w-4 h-4"></i> Desplegar Mapa de Operación HMO
                             </button>
                         </div>
                     `;
@@ -330,7 +317,7 @@
                         ${currentSection !== "Materiales" && currentSection !== "Mapas" ? `
                             <span class="flex items-center gap-1 text-[10px] font-bold border px-2 py-0.5 rounded-md ${badgeColor}"><i data-lucide="${icon}" class="w-3 h-3"></i> ${pfm}</span>
                         ` : `
-                            <span class="flex items-center gap-1 text-[10px] font-bold border border-indigo-500/30 bg-indigo-500/10 text-indigo-400 px-2 py-0.5 rounded-md"><i data-lucide="folder" class="w-3 h-3"></i> Interno</span>
+                            <span class="flex items-center gap-1 text-[10px] font-bold border border-indigo-500/30 bg-indigo-500/10 text-indigo-400 px-2 py-0.5 rounded-md"><i data-lucide="folder" class="w-3 h-3"></i> Fijo</span>
                         `}
                     </div>
                     ${imageHTML}
@@ -349,52 +336,4 @@
         function copyTextToClipboard(text, successMessage) {
             if (!text || text === "") return;
             if (!navigator.clipboard) {
-                const textArea = document.createElement("textarea"); textArea.value = text;
-                textArea.style.position = "fixed"; document.body.appendChild(textArea);
-                textArea.focus(); textArea.select();
-                try { document.execCommand('copy'); showToast(successMessage); } catch (err) {}
-                document.body.removeChild(textArea); return;
-            }
-            navigator.clipboard.writeText(text).then(() => { showToast(successMessage); }).catch(() => {});
-        }
-
-        function showToast(msg) {
-            const toast = document.getElementById("toast");
-            document.getElementById("toast-text").innerText = msg;
-            toast.classList.remove("hidden");
-            setTimeout(() => { toast.classList.add("hidden"); }, 2500);
-        }
-
-        function openReaderModal(url, fuente) {
-            if(!url || url === "") return;
-            document.getElementById("modal-source-badge").innerText = `Zona: ${fuente}`;
-            document.getElementById("news-frame").src = url;
-            document.getElementById("reader-modal").classList.remove("hidden");
-        }
-        
-        function closeReaderModal() {
-            document.getElementById("reader-modal").classList.add("hidden");
-            document.getElementById("news-frame").src = "";
-        }
-
-        function switchTab(s) {
-            currentSection = s;
-            document.getElementById("current-tab-title").innerText = tabNamesVisual[s];
-            document.querySelectorAll(".section-nav").forEach(n => {
-                if(n.getAttribute("data-section") === s) n.classList.replace("text-slate-400", "text-indigo-400");
-                else n.classList.replace("text-indigo-400", "text-slate-400");
-            });
-            
-            if (s === "Mapas") document.getElementById("search-container").classList.add("hidden");
-            else document.getElementById("search-container").classList.remove("hidden");
-
-            // Ejecuta la descarga limpia de la hoja seleccionada
-            fetchData();
-        }
-
-        function escapeHTML(str) {
-            return str.replace(/[&<>'"]/g, t => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[t] || t));
-        }
-    </script>
-</body>
-</html>
+                const textArea = document.createElement("textarea"); textArea.
