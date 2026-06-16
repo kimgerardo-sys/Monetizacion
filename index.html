@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>AgoraPolis - Campñas & Coyuntura</title>
+    <title>AgoraPolis - Campañas & Coyuntura</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#0f172a">
     
-    <link rel="manifest" href="data:application/json;base64,ewogICJkZWZhdWx0X2xvY2FsZSI6ICJlcyIsCiAgIm5hbWUiOiAiQWdvcmFQb2xpcyBNZWRpb3MiLAogICJzaG9ydF9uYW1lIjogIkFnb3JhUG9saXMiLAogICJkZXNjcmlwdGlvbiI6ICJIdWIgZGUgcGVyaW9kaXNtbyBpbmRlcGVuZGllbnRlIHkgYXNlc29yw61hIHBvbMOtdGljYSIsCiAgInN0YW5kYWxvbmUiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzBmMTcyYSIsCiAgInRoZW1lX2NvbG9yIjogIiMwZjE3MmEiLAogICpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJodHRwczovL2ltZy5pY29uczguY29tL2ZsdWVudHkvNTEyL2dvdmVybm1lbnQucG5nIiwKICAgICAgInNpemVzIjogIjUxMng1MTIiLAogICAgICAidHlwZSI6ICJpbWFnZS9wbmciCiAgICB9CiAgXQp9">
+    <link rel="manifest" href="data:application/json;base64,ewogICJkZWZhdWx0X2xvY2FsZSI6ICJlcyIsCiAgIm5hbWUiOiAiQWdvcmFQb2xpcyBNZWRpb3MiLAogICJzaG9ydF9uYW1lIjogIkFnb3JhUG9saXMiLAogICJkZXNjcmlwdGlvbiI6ICJIdWIgZGUgcGVyaW9kaXNtbyBpbmRlcGVuZGllbnRlIHkgYXNlc29yw61hIHBvbMOtdGljYSIsCiAgInN0YW5kYWxvbmUiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzBmMTcyYSIsCiAgInRoZW1lX2NvbG9yIjogIiMwZjE3MmEiLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJodHRwczovL2ltZy5pY29uczguY29tL2ZsdWVudHkvNTEyL2dvdmVybm1lbnQucG5nIiwKICAgICAgInNpemVzIjogIjUxMng1MTIiLAogICAgICAidHlwZSI6ICJpbWFnZS9wbmciCiAgICB9CiAgXQp9">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -24,7 +24,6 @@
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col pb-24 antialiased">
 
-    <!-- HEADER SUPERIOR -->
     <header class="fixed top-0 left-0 right-0 z-50 glass-nav border-b border-slate-800 px-4 py-3.5">
         <div class="max-w-md mx-auto flex items-center justify-between">
             <div class="flex items-center gap-3">
@@ -36,31 +35,27 @@
                     <p class="text-[10px] text-indigo-400 font-bold tracking-wider uppercase">Operación & Estrategia</p>
                 </div>
             </div>
-            <button id="sync-btn" onclick="fetchData()" class="w-11 h-11 rounded-xl bg-slate-800/80 hover:bg-slate-800 border border-slate-700 flex items-center justify-center transition-all active:scale-95">
+            <button id="sync-btn" onclick="fetchData()" class="w-11 h-11 rounded-xl bg-slate-800/80 hover:bg-slate-800 border border-slate-700 flex items-center justify-center transition-all active:scale-95" aria-label="Sincronizar datos">
                 <i data-lucide="refresh-cw" class="w-4 h-4 text-slate-300"></i>
             </button>
         </div>
     </header>
 
-    <!-- MAIN CONTAINER -->
     <main class="flex-1 max-w-md w-full mx-auto px-4 pt-24 space-y-5">
         
-        <!-- CONSOLA DE ERROR DEPURADORA (Oculta por defecto) -->
         <div id="debug-console" class="hidden bg-red-500/10 border border-red-500/30 rounded-xl p-3.5 text-xs text-red-400 space-y-1">
-            <p class="font-bold flex items-center gap-1.5"><i data-lucide="alert-triangle" class="w-4 h-4"></i> Monitor de Enlace Cloud:</p>
+            <p class="font-bold flex items-center gap-1.5"><i data-lucide="alert-triangle" class="w-4 h-4"></i> Monitor de Enlace en la Nube:</p>
             <p id="debug-message" class="font-mono text-[11px] leading-relaxed"></p>
         </div>
         
-        <!-- BUSCADOR -->
         <div class="relative">
             <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
                 <i data-lucide="search" class="w-4 h-4 text-slate-500"></i>
             </span>
-            <input type="text" id="search-bar" oninput="renderFeed()" placeholder="Buscar aviso, medio o palabra clave..." 
-                class="w-full h-12 pl-10 pr-4 bg-slate-800/40 border border-slate-800 rounded-xl text-sm placeholder-slate-500 text-white focus:outline-none focus:border-indigo-500">
+            <input type="text" id="search-bar" oninput="renderFeed()" placeholder="Buscar avisos, medios o palabras clave..." 
+                class="w-full h-12 pl-10 pr-4 bg-slate-800/40 border border-slate-800 rounded-xl text-sm placeholder-slate-500 text-white focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all">
         </div>
 
-        <!-- FILTROS -->
         <div class="flex gap-2 overflow-x-auto hide-scrollbar py-1">
             <button onclick="setPlatformFilter('all')" class="platform-tab px-4 h-9 rounded-xl text-xs font-semibold whitespace-nowrap transition-all bg-indigo-600 text-white" data-platform="all">
                 Todo el flujo
@@ -69,22 +64,24 @@
                 Avisos / Invitaciones
             </button>
             <button onclick="setPlatformFilter('Web')" class="platform-tab px-4 h-9 rounded-xl text-xs font-semibold whitespace-nowrap transition-all bg-slate-800 text-slate-400 border border-slate-800/60" data-platform="Web">
-                Portales
+                Portales Web
             </button>
             <button onclick="setPlatformFilter('Newsletter')" class="platform-tab px-4 h-9 rounded-xl text-xs font-semibold whitespace-nowrap transition-all bg-slate-800 text-slate-400 border border-slate-800/60" data-platform="Newsletter">
                 Newsletters
             </button>
+            <button onclick="setPlatformFilter('X')" class="platform-tab px-4 h-9 rounded-xl text-xs font-semibold whitespace-nowrap transition-all bg-slate-800 text-slate-400 border border-slate-800/60" data-platform="X">
+                X (Twitter)
+            </button>
         </div>
 
-        <!-- FEED -->
         <div id="feed-container" class="space-y-4">
             <div class="animate-pulse space-y-4">
+                <div class="h-36 bg-slate-800/40 rounded-xl border border-slate-800"></div>
                 <div class="h-36 bg-slate-800/40 rounded-xl border border-slate-800"></div>
             </div>
         </div>
     </main>
 
-    <!-- NAVEGACIÓN INFERIOR -->
     <nav class="fixed bottom-0 left-0 right-0 glass-nav border-t border-slate-800/80 z-50">
         <div class="max-w-md mx-auto flex justify-around items-center h-20">
             <button onclick="switchTab('Periodismo')" class="section-nav flex flex-col items-center justify-center w-20 h-14 text-indigo-400" data-section="Periodismo">
@@ -103,10 +100,8 @@
     </nav>
 
     <script>
-        // ==========================================
-        // COLOCA AQUÍ TU URL DE GOOGLE APPS SCRIPT
-        // ==========================================
-        const API_URL = "https://script.google.com/macros/s/AKfycbxSzAIyDpFBMgNacJf4r-VT-zmE8vtKMUOnWYAuHs9QZ1Zp4dgeOqfOBejsD-5ez1XHMQ/exec"; 
+        // ID de tu Google Sheets incrustado de forma nativa e infalible
+        const SPREADSHEET_ID = "1u1Hey3bmvuU_MrO4NEQItXHquXFwRQjsxO7vsucEbh8"; 
 
         let currentSection = "Periodismo";
         let currentPlatform = "all";
@@ -125,46 +120,84 @@
             if (syncBtn) syncBtn.classList.add('animate-spin');
             if (debugConsole) debugConsole.classList.add('hidden');
 
-            // Intento de lectura de caché local preventivo
+            // Leer almacenamiento local inmediato (Offline-first)
             const cache = localStorage.getItem(`polis_camp_cache_${currentSection}`);
             if (cache) {
                 feedData = JSON.parse(cache);
                 renderFeed();
             }
 
-            if (!API_URL || API_URL.includes("AQUÍ_PEGA")) {
-                showDebug("No has colocado una URL válida en 'API_URL'. Se están cargando datos simulados de demostración local.");
-                loadMockData();
-                if (syncBtn) syncBtn.classList.remove('animate-spin');
-                return;
-            }
-
             try {
-                // Agregar timestamp para romper el caché agresivo del navegador móvil
-                const response = await fetch(`${API_URL}?seccion=${currentSection}&_ts=${Date.now()}`);
+                // Consulta directa al lector CSV nativo de la suite de Google
+                const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(currentSection)}&_ts=${Date.now()}`;
                 
-                if (!response.ok) throw new Error(`HTTP status ${response.status}`);
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`Google Sheets respondió con estatus incorreto: ${response.status}`);
                 
-                const data = await response.json();
-                
-                if (data.error) {
-                    throw new Error(`Google Sheets dice: ${data.error}`);
-                }
-                
-                if (Array.isArray(data)) {
-                    feedData = data;
+                const csvText = await response.text();
+                const parsedData = parseCSVToJSON(csvText);
+
+                if (parsedData.length > 0) {
+                    feedData = parsedData;
                     localStorage.setItem(`polis_camp_cache_${currentSection}`, JSON.stringify(feedData));
                     renderFeed();
                 } else {
-                    throw new Error("El formato devuelto no es una lista válida. Revisa los encabezados del Sheets.");
+                    throw new Error("La pestaña se conectó bien, pero no encontramos filas escritas con información.");
                 }
             } catch (err) {
                 console.error(err);
-                showDebug(`${err.message}. Asegúrate de que implementaste el script como 'Aplicación Web' con acceso para 'Cualquiera'.`);
+                showDebug(`${err.message}. RECUERDA: Ve a tu Google Sheets, da clic en el botón azul 'Compartir' y cámbialo a 'Cualquier persona con el enlace' en modo Lector.`);
                 if (!cache) loadMockData(); 
             } finally {
                 if (syncBtn) syncBtn.classList.remove('animate-spin');
             }
+        }
+
+        // Conversor rápido de CSV a Objeto JSON JavaScript sin librerías pesadas
+        function parseCSVToJSON(csvText) {
+            const lines = [];
+            let row = [""];
+            let inQuotes = false;
+
+            for (let i = 0; i < csvText.length; i++) {
+                let c = csvText[i];
+                let next = csvText[i+1];
+                if (c === '"') {
+                    if (inQuotes && next === '"') { row[row.length - 1] += '"'; i++; }
+                    else { inQuotes = !inQuotes; }
+                } else if (c === ',' && !inQuotes) {
+                    row.push('');
+                } else if ((c === '\r' || c === '\n') && !inQuotes) {
+                    if (c === '\r' && next === '\n') { i++; }
+                    lines.push(row);
+                    row = [''];
+                } else {
+                    row[row.length - 1] += c;
+                }
+            }
+            if (row.length > 1 || row[0] !== '') lines.push(row);
+            if (lines.length <= 1) return [];
+
+            // Limpieza estricta de acentos en encabezados para evitar incompatibilidades
+            const headers = lines[0].map(h => h.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, ""));
+            const jsonArray = [];
+
+            for (let i = 1; i < lines.length; i++) {
+                const line = lines[i];
+                if (line.length < headers.length) continue;
+                
+                const record = {};
+                let hasContent = false;
+
+                headers.forEach((header, index) => {
+                    const value = line[index] ? line[index].trim() : "";
+                    record[header] = value;
+                    if (header === "titulo" && value !== "") hasContent = true;
+                });
+
+                if (hasContent) jsonArray.push(record);
+            }
+            return jsonArray;
         }
 
         function showDebug(msg) {
@@ -182,10 +215,9 @@
             container.innerHTML = "";
             const searchVal = document.getElementById("search-bar").value.toLowerCase();
 
-            // Mapeo tolerante a mayúsculas/minúsculas desde Sheets
             const filtered = feedData.filter(item => {
-                const itemPlatform = (item.tematica || item.temática || "").toString().trim();
-                const itemTitle = (item.titulo || item.título || "").toString().toLowerCase();
+                const itemPlatform = (item.tematica || "").toString().trim();
+                const itemTitle = (item.titulo || "").toString().toLowerCase();
                 const itemResumen = (item.resumen || "").toString().toLowerCase();
                 const itemFuente = (item.fuente || "").toString().toLowerCase();
 
@@ -200,7 +232,7 @@
                 container.innerHTML = `
                     <div class="flex flex-col items-center justify-center py-16 text-slate-600 text-center">
                         <i data-lucide="folder-open" class="w-8 h-8 mb-2 stroke-[1.5]"></i>
-                        <p class="text-xs font-medium">No se encontraron renglones con datos o el filtro está vacío.</p>
+                        <p class="text-xs font-medium">No hay registros cargados para esta sección o filtro.</p>
                     </div>`;
                 lucide.createIcons();
                 return;
@@ -209,11 +241,10 @@
             filtered.forEach(item => {
                 const card = document.createElement("div");
                 
-                // Normalización de llaves de objetos por si se escribieron con acentos en Sheets
-                const title = item.titulo || item.título || "Sin título";
-                const resumen = item.resumen || "Sin descripción";
-                const fuente = item.fuente || "Aviso General";
-                const pfm = (item.tematica || item.temática || "Web").toString().trim();
+                const title = item.titulo || "Sin título";
+                const resumen = item.resumen || "Sin descripción o mensaje";
+                const fuente = item.fuente || "Aviso de Campaña";
+                const pfm = (item.tematica || "Web").toString().trim();
                 const link = item.link || "";
                 const img = item.imagen || "";
 
@@ -223,8 +254,9 @@
                 const cleanLink = encodeURI(link.trim());
                 const cleanImg = img ? encodeURI(img.trim()) : "";
 
+                // Diseño premium destacado si se configura como un 'Aviso' urgente en Sheets
                 if (pfm === "Aviso") {
-                    card.className = "bg-gradient-to-br from-amber-500/10 to-orange-500/5 border border-amber-500/30 rounded-xl p-4 flex flex-col space-y-3 relative overflow-hidden shadow-md";
+                    card.className = "bg-gradient-to-br from-amber-500/10 to-orange-500/5 border border-amber-500/30 rounded-xl p-4 flex flex-col space-y-3 relative overflow-hidden shadow-md shadow-amber-500/5";
                 } else {
                     card.className = "bg-slate-800/30 border border-slate-800/80 rounded-xl p-4 flex flex-col space-y-3 transition-all";
                 }
@@ -240,16 +272,16 @@
 
                 let imageHTML = "";
                 if (cleanImg && cleanImg !== "") {
-                    imageHTML = `<div class="w-full max-h-48 rounded-lg overflow-hidden border border-slate-700/50 bg-slate-900 flex items-center justify-center">
-                                    <img src="${cleanImg}" alt="Flyer" class="w-full h-full object-cover" onerror="this.parentNode.style.display='none'">
+                    imageHTML = `<div class="w-full max-h-52 rounded-lg overflow-hidden border border-slate-700/40 bg-slate-900 flex items-center justify-center">
+                                    <img src="${cleanImg}" alt="Visual Informativo" class="w-full h-full object-cover" onerror="this.parentNode.style.display='none'">
                                  </div>`;
                 }
 
                 let actionButtonHTML = "";
                 if (cleanLink && cleanLink !== "undefined" && cleanLink !== "") {
-                    let buttonText = "Abrir enlace de campaña";
-                    if (pfm === "Newsletter") buttonText = "Leer Newsletter Corporativo";
-                    if (pfm === "Aviso") buttonText = "Ver Convocatoria / Link";
+                    let buttonText = "Analizar fuente original";
+                    if (pfm === "Newsletter") buttonText = "Leer Newsletter Completo";
+                    if (pfm === "Aviso") buttonText = "Confirmar Asistencia / Ver Enlace";
                     
                     actionButtonHTML = `
                         <a href="${cleanLink}" target="_blank" rel="noopener noreferrer" 
@@ -308,7 +340,7 @@
 
         function loadMockData() {
             feedData = [
-                { id: 1, titulo: "Sistema operando en modo local", tematica: "Aviso", fuente: "Sistema", resumen: "Escribe tu URL de Google Apps Script arriba para enlazar en vivo tu base de datos.", link: "" }
+                { id: 1, titulo: "Cargando conexión con la mesa de control...", tematica: "Aviso", fuente: "Sistema", resumen: "Asegúrate de que las pestañas de tu Sheets se llamen exactamente: Periodismo, Analisis, Consultoria.", link: "" }
             ];
             renderFeed();
         }
