@@ -19,7 +19,7 @@
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         @keyframes pulse-red {
             0% { box-shadow: 0 0 0 0 rgba(225, 29, 72, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(225, 29, 72, 0); }
+            70% { box-shadow: 0 0 0 8px rgba(225, 29, 72, 0); }
             100% { box-shadow: 0 0 0 0 rgba(225, 29, 72, 0); }
         }
         .sos-pulse { animation: pulse-red 2s infinite; }
@@ -66,8 +66,7 @@
         </div>
     </div>
 
-
-    <!-- MODAL MENSAJE DEL DÍA (Línea del Día) -->
+    <!-- MODAL MENSAJE DEL DÍA -->
     <div id="motd-modal" class="hidden fixed inset-0 z-[60] bg-slate-950/95 backdrop-blur-md flex flex-col justify-center items-center px-4">
         <div class="bg-slate-800 border border-indigo-500/30 w-full max-w-sm rounded-3xl p-6 shadow-2xl relative overflow-hidden">
             <div class="absolute top-0 right-0 w-32 h-32 bg-indigo-500/20 blur-[50px] rounded-full pointer-events-none"></div>
@@ -94,13 +93,12 @@
         </div>
     </div>
 
-
-    <!-- CABECERA -->
-    <header class="fixed top-0 left-0 right-0 z-40 glass-header border-b border-slate-800/60 px-4 py-3.5">
+    <!-- CABECERA PRINCIPAL -->
+    <header class="fixed top-0 left-0 right-0 z-40 glass-header border-b border-slate-800/60 px-3 py-3.5">
         <div class="max-w-xl mx-auto flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-purple-600 flex items-center justify-center border border-indigo-500/20 shadow-lg shadow-indigo-500/10">
-                    <i data-lucide="shield" class="w-5 h-5 text-white"></i>
+            <div class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-500 to-purple-600 flex items-center justify-center border border-indigo-500/20 shadow-lg shadow-indigo-500/10">
+                    <i data-lucide="shield" class="w-4 h-4 text-white"></i>
                 </div>
                 <div>
                     <h1 class="text-sm font-bold tracking-tight text-white leading-tight">AgoraPolis</h1>
@@ -108,19 +106,27 @@
                 </div>
             </div>
             
-            <div class="flex items-center gap-2">
-                <button id="btn-header-mensaje" class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700/80 flex items-center justify-center active:scale-95 transition-all hover:bg-slate-700">
+            <div class="flex items-center gap-1.5">
+                <!-- BOTÓN SOS REUBICADO -->
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSdXg10XVS7HIvLWc1Dg3CV_89ibuD38Ft4eR4gTwKKgRCPnjA/viewform?usp=header" target="_blank" 
+                   class="w-9 h-9 rounded-xl bg-gradient-to-tr from-rose-600 to-rose-500 flex items-center justify-center active:scale-95 transition-transform border border-rose-400 shadow-lg shadow-rose-600/40 sos-pulse" title="Reportar Incidencia">
+                    <i data-lucide="siren" class="w-4 h-4 text-white"></i>
+                </a>
+                
+                <!-- BOTÓN DE MENSAJE DEL DÍA -->
+                <button id="btn-header-mensaje" class="w-9 h-9 rounded-xl bg-slate-800 border border-slate-700/80 flex items-center justify-center active:scale-95 transition-all hover:bg-slate-700" title="Ver Línea del Día">
                     <i data-lucide="megaphone" class="w-4 h-4 text-indigo-400"></i>
                 </button>
-                <div class="bg-slate-800/80 border border-slate-700/50 rounded-xl px-3 h-10 flex items-center gap-2 shadow-inner">
-                    <i data-lucide="star" class="w-4 h-4 text-amber-400 fill-amber-400"></i>
-                    <div class="text-left">
-                        <p class="text-[8px] font-bold text-slate-400 uppercase leading-none">Puntos</p>
-                        <p id="task-counter" class="text-xs font-black text-white leading-none mt-0.5">0</p>
-                    </div>
+                
+                <!-- PUNTOS COMPACTOS -->
+                <div class="bg-slate-800/80 border border-slate-700/50 rounded-xl px-2 h-9 flex items-center gap-1.5 shadow-inner">
+                    <i data-lucide="star" class="w-3.5 h-3.5 text-amber-400 fill-amber-400"></i>
+                    <p id="task-counter" class="text-xs font-black text-white leading-none">0</p>
                 </div>
-                <button id="sync-btn" onclick="fetchData()" class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700/80 flex items-center justify-center active:scale-95 transition-all">
-                    <i data-lucide="refresh-cw" class="w-4 h-4 text-slate-300"></i>
+                
+                <!-- BOTÓN SINCRONIZAR -->
+                <button id="sync-btn" onclick="fetchData()" class="w-9 h-9 rounded-xl bg-slate-800 border border-slate-700/80 flex items-center justify-center active:scale-95 transition-all">
+                    <i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-slate-300"></i>
                 </button>
             </div>
         </div>
@@ -130,15 +136,9 @@
         <i data-lucide="check-circle" class="w-4 h-4"></i> <span id="toast-text">Completado</span>
     </div>
 
-    <!-- BOTÓN SOS FLOTANTE -->
-    <a href="https://docs.google.com/forms/d/e/1FAIpQLSdXg10XVS7HIvLWc1Dg3CV_89ibuD38Ft4eR4gTwKKgRCPnjA/viewform?usp=header" target="_blank" 
-       class="fixed bottom-20 right-4 z-50 w-14 h-14 bg-gradient-to-tr from-rose-600 to-rose-500 rounded-full shadow-lg shadow-rose-600/40 flex flex-col items-center justify-center border border-rose-400 hover:scale-105 active:scale-95 transition-transform sos-pulse">
-        <i data-lucide="siren" class="w-6 h-6 text-white mb-0.5"></i>
-        <span class="text-[8px] font-black text-white uppercase leading-none tracking-widest">SOS</span>
-    </a>
-
-    <main class="flex-1 max-w-xl w-full mx-auto px-4 pt-24 space-y-4">
-        <div id="welcome-card" class="bg-indigo-600/10 border border-indigo-500/20 rounded-2xl p-4 flex items-center justify-between mb-2">
+    <main class="flex-1 max-w-xl w-full mx-auto px-4 pt-24 space-y-3">
+        <!-- Tarjeta de Bienvenida y Nivel -->
+        <div id="welcome-card" class="bg-indigo-600/10 border border-indigo-500/20 rounded-2xl p-4 flex items-center justify-between">
             <div>
                 <div class="flex items-center gap-2 mb-0.5">
                     <p class="text-[10px] text-indigo-400 font-bold uppercase tracking-wider">Miembro Activo</p>
@@ -146,9 +146,15 @@
                 </div>
                 <h3 id="user-display-name" class="text-sm font-bold text-white">Agente</h3>
             </div>
-            <button onclick="logout()" class="text-slate-400 hover:text-white transition-colors bg-slate-800 p-2 rounded-lg border border-slate-700">
+            <button onclick="logout()" class="text-slate-400 hover:text-white transition-colors bg-slate-800 p-2 rounded-xl border border-slate-700">
                 <i data-lucide="log-out" class="w-4 h-4"></i>
             </button>
+        </div>
+
+        <!-- EXPLICACIÓN AMIGABLE DE LA SECCIÓN -->
+        <div class="bg-slate-800/40 border border-slate-700/50 rounded-2xl p-3 flex items-start gap-2 mb-2">
+            <div id="section-icon-container" class="mt-0.5"></div>
+            <p id="section-explanation-text" class="text-xs text-slate-300 leading-relaxed font-medium"></p>
         </div>
 
         <div id="search-container" class="relative">
@@ -156,17 +162,17 @@
                 <i data-lucide="search" class="w-4 h-4 text-slate-500"></i>
             </span>
             <input type="text" id="search-bar" oninput="renderFeed()" placeholder="Buscar reportes o palabras clave..." 
-                class="w-full h-11 pl-10 pr-4 bg-slate-800/40 border border-slate-800 rounded-xl text-sm placeholder-slate-500 text-white focus:outline-none focus:border-indigo-500 transition-all">
+                class="w-full h-11 pl-10 pr-4 bg-slate-800/60 border border-slate-700 rounded-xl text-sm placeholder-slate-500 text-white focus:outline-none focus:border-indigo-500 transition-all shadow-inner">
         </div>
 
-        <div id="feed-container" class="space-y-4">
+        <div id="feed-container" class="space-y-4 pt-1">
             <div class="animate-pulse space-y-4">
                 <div class="h-32 bg-slate-800/40 rounded-2xl border border-slate-800"></div>
             </div>
         </div>
     </main>
 
-    <!-- NAVEGACIÓN -->
+    <!-- NAVEGACIÓN INFERIOR -->
     <nav class="fixed bottom-0 left-0 right-0 glass-header border-t border-slate-800/60 z-40 px-2 shadow-2xl">
         <div class="max-w-xl mx-auto flex justify-around items-center h-16">
             <button onclick="switchTab('Periodismo')" class="section-nav flex flex-col items-center justify-center flex-1 h-full text-indigo-400" data-section="Periodismo">
@@ -208,8 +214,16 @@
 
     <!-- SCRIPT PRINCIPAL -->
     <script>
-        // 🚨 PEGA AQUÍ TU NUEVA URL DEL GOOGLE APPS SCRIPT 🚨
-        const API_URL = "https://script.google.com/macros/s/AKfycbx3ImLmqnL20__4UGl7aEak-WmDAgi0k05mrKZDDxQdYh0AoFIEt57hRJ1VKzSgVaaWcA/exec"; 
+        // 🚨 PEGA AQUÍ TU URL DEL GOOGLE APPS SCRIPT 🚨
+        const API_URL = "LA_URL_AQUI_POR_FAVOR"; 
+
+        const SECTION_INFOS = {
+            "Periodismo": { icon: "📰", text: "<span class='font-bold text-white'>¡Entérate y difunde!</span> Aquí publicamos las noticias clave. Léelas, cópialas y compártelas en tus grupos para mantener a todos informados." },
+            "Tendencias": { icon: "📱", text: "<span class='font-bold text-white'>¡Hagamos ruido digital!</span> Aquí verás los mensajes y hashtags oficiales. Apoya a nuestros candidatos con tus likes y comentarios." },
+            "Estrategia": { icon: "🎯", text: "<span class='font-bold text-white'>Tu centro de misiones.</span> Revisa dónde y cuándo son los eventos (físicos o virtuales). ¡Únete y sé parte de la acción!" },
+            "Materiales": { icon: "🎨", text: "<span class='font-bold text-white'>Tu kit de campaña.</span> Descarga imágenes, logos y flyers para imprimirlos o mandarlos por WhatsApp y presumir el movimiento." },
+            "Mapas":      { icon: "🗺️", text: "<span class='font-bold text-white'>No te pierdas.</span> Encuentra las ubicaciones importantes de nuestra estructura y usa tu celular para que te guíe directo al punto." }
+        };
 
         let currentSection = "Periodismo"; 
         let feedData = [];
@@ -225,12 +239,21 @@
                 document.getElementById("user-display-name").innerText = userObj.nombre;
                 
                 loadTaskCounter();
+                updateSectionExplanation();
                 fetchData();
                 fetchMensajeDelDia(); 
             } else {
                 document.getElementById("login-screen").classList.remove("hidden");
             }
         });
+
+        function updateSectionExplanation() {
+            const info = SECTION_INFOS[currentSection];
+            if (info) {
+                document.getElementById("section-icon-container").innerHTML = `<span class="text-base">${info.icon}</span>`;
+                document.getElementById("section-explanation-text").innerHTML = info.text;
+            }
+        }
 
         async function attemptLogin() {
             const name = document.getElementById("login-name").value;
@@ -269,6 +292,7 @@
                 document.getElementById("login-screen").classList.add("hidden");
                 showToast(`¡Acceso Autorizado!`);
                 loadTaskCounter();
+                updateSectionExplanation();
                 fetchData();
                 fetchMensajeDelDia();
 
@@ -291,7 +315,7 @@
         }
 
         async function fetchMensajeDelDia() {
-            if (API_URL.includes("LA_URL_AQUI")) return;
+            if (API_URL.includes("https://script.google.com/macros/s/AKfycbx3ImLmqnL20__4UGl7aEak-WmDAgi0k05mrKZDDxQdYh0AoFIEt57hRJ1VKzSgVaaWcA/exec")) return;
             try {
                 const url = `${API_URL}?action=mensaje`;
                 const response = await fetch(url);
@@ -396,7 +420,7 @@
             });
 
             if (filtered.length === 0) {
-                container.innerHTML = `<div class="text-center py-16 text-slate-600 text-xs font-medium">Sin instrucciones activas.</div>`;
+                container.innerHTML = `<div class="text-center py-16 text-slate-600 text-xs font-medium">Aún no hay instrucciones en esta división.</div>`;
                 return;
             }
 
@@ -475,7 +499,7 @@
                 } else if (currentSection === "Mapas") {
                     actionArea = `
                         <a href="${escapeHTML(link)}" target="_blank" onclick="markActionCompleted('${id}')" class="w-full h-11 rounded-xl bg-emerald-600 text-white text-xs font-bold flex items-center justify-center gap-2 active:scale-95 transition-all shadow-lg shadow-emerald-600/20">
-                            <i data-lucide="map" class="w-4 h-4"></i> Abrir App de Mapas
+                            <i data-lucide="map" class="w-4 h-4"></i> Abrir Mapa en la App Nativa
                         </a>
                     `;
                 }
@@ -538,6 +562,7 @@
             if (s === "Mapas") document.getElementById("search-container").classList.add("hidden");
             else document.getElementById("search-container").classList.remove("hidden");
 
+            updateSectionExplanation();
             fetchData();
         }
 
