@@ -24,6 +24,53 @@
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col pb-24 antialiased">
 
+    <!-- ============================================== -->
+    <!-- PANTALLA DE ACCESO DE MIEMBROS (LOGIN) -->
+    <!-- ============================================== -->
+    <div id="login-screen" class="fixed inset-0 z-50 bg-slate-900 flex flex-col justify-center items-center px-6 transition-opacity duration-300">
+        <!-- Decoración de fondo -->
+        <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+            <div class="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] bg-indigo-600/20 blur-[120px] rounded-full"></div>
+            <div class="absolute bottom-[10%] -right-[10%] w-[60%] h-[60%] bg-purple-600/20 blur-[120px] rounded-full"></div>
+        </div>
+
+        <div class="w-full max-w-sm bg-slate-800/60 border border-slate-700/50 rounded-3xl p-8 shadow-2xl backdrop-blur-xl relative z-10">
+            <div class="flex justify-center mb-6">
+                <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-indigo-500 to-purple-600 flex items-center justify-center border border-indigo-500/30 shadow-lg shadow-indigo-500/20">
+                    <i data-lucide="shield-check" class="w-8 h-8 text-white"></i>
+                </div>
+            </div>
+            <h2 class="text-2xl font-bold text-white text-center mb-2 tracking-tight">Acceso Búnker</h2>
+            <p class="text-xs text-slate-400 text-center mb-8 font-medium">Autenticación segura de miembros.</p>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">Nombre Completo</label>
+                    <div class="relative">
+                        <i data-lucide="user" class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-500"></i>
+                        <input type="text" id="login-name" class="w-full h-12 bg-slate-900/50 border border-slate-700/80 rounded-xl pl-10 pr-4 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all" placeholder="Tal cual como está registrado">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">Celular de Contacto</label>
+                    <div class="relative">
+                        <i data-lucide="phone" class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-500"></i>
+                        <input type="tel" id="login-phone" class="w-full h-12 bg-slate-900/50 border border-slate-700/80 rounded-xl pl-10 pr-4 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all" placeholder="Número celular">
+                    </div>
+                </div>
+                <button id="login-btn" onclick="attemptLogin()" class="w-full h-12 mt-6 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold rounded-xl flex items-center justify-center gap-2 active:scale-95 transition-all shadow-lg shadow-indigo-500/25 border border-indigo-500/50">
+                    <span>Ingresar al Sistema</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </button>
+                <p id="login-error" class="text-rose-400 text-[11px] text-center font-semibold mt-4 hidden bg-rose-500/10 border border-rose-500/20 py-2 rounded-lg"></p>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ============================================== -->
+    <!-- INTERFAZ PRINCIPAL DE LA APP -->
+    <!-- ============================================== -->
+
     <!-- CABECERA -->
     <header class="fixed top-0 left-0 right-0 z-40 glass-header border-b border-slate-800/60 px-4 py-3.5">
         <div class="max-w-xl mx-auto flex items-center justify-between">
@@ -59,6 +106,17 @@
 
     <!-- CONTENEDOR DE CONTENIDO -->
     <main class="flex-1 max-w-xl w-full mx-auto px-4 pt-24 space-y-4">
+        <!-- Tarjeta de Bienvenida Personalizada -->
+        <div id="welcome-card" class="bg-indigo-600/10 border border-indigo-500/20 rounded-2xl p-4 flex items-center justify-between mb-2">
+            <div>
+                <p class="text-[10px] text-indigo-400 font-bold uppercase tracking-wider mb-0.5">Miembro Activo</p>
+                <h3 id="user-display-name" class="text-sm font-bold text-white">Agente</h3>
+            </div>
+            <button onclick="logout()" class="text-slate-400 hover:text-white transition-colors bg-slate-800 p-2 rounded-lg border border-slate-700">
+                <i data-lucide="log-out" class="w-4 h-4"></i>
+            </button>
+        </div>
+
         <div id="search-container" class="relative">
             <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
                 <i data-lucide="search" class="w-4 h-4 text-slate-500"></i>
@@ -117,8 +175,13 @@
 
     <!-- SCRIPT PRINCIPAL -->
     <script>
-        // 🚨 PEGA AQUÍ LA URL QUE TE DIO GOOGLE APPS SCRIPT AL IMPLEMENTAR 🚨
+        // 🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨
+        // PEGA AQUÍ LA URL QUE TE DIO GOOGLE APPS SCRIPT AL TERMINAR DE IMPLEMENTAR.
+        // DEBE EMPEZAR CON "https://script.google.com/macros/s/...."
+        
         const API_URL = "https://script.google.com/macros/s/AKfycbx3ImLmqnL20__4UGl7aEak-WmDAgi0k05mrKZDDxQdYh0AoFIEt57hRJ1VKzSgVaaWcA/exec"; 
+        
+        // 🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨
 
         let currentSection = "Periodismo"; 
         let feedData = [];
@@ -126,9 +189,90 @@
         document.addEventListener("DOMContentLoaded", () => {
             setupPWAComponents();
             lucide.createIcons();
-            loadTaskCounter();
-            fetchData();
+            
+            // VERIFICACIÓN DE SESIÓN ACTIVA AL ENTRAR A LA APP
+            const session = localStorage.getItem("polis_session");
+            if (session) {
+                // Si ya está logueado, ocultamos la pantalla de login y cargamos todo
+                document.getElementById("login-screen").classList.add("hidden");
+                const userObj = JSON.parse(session);
+                document.getElementById("user-display-name").innerText = userObj.nombre;
+                
+                loadTaskCounter();
+                fetchData();
+            } else {
+                // Si no hay sesión, obligamos a iniciar mostrando la pantalla
+                document.getElementById("login-screen").classList.remove("hidden");
+            }
         });
+
+        // FUNCIÓN DE LOGIN
+        async function attemptLogin() {
+            const name = document.getElementById("login-name").value;
+            const phone = document.getElementById("login-phone").value;
+            const errorMsg = document.getElementById("login-error");
+            const btn = document.getElementById("login-btn");
+
+            if (!name || !phone) {
+                errorMsg.innerText = "Por favor llena ambos campos.";
+                errorMsg.classList.remove("hidden");
+                return;
+            }
+
+            if (API_URL.includes("OLVIDASTE_PEGAR")) {
+                errorMsg.innerText = "Error: Falta configurar la URL de la API en el código.";
+                errorMsg.classList.remove("hidden");
+                return;
+            }
+
+            errorMsg.classList.add("hidden");
+            btn.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> Verificando...`;
+            lucide.createIcons();
+            btn.disabled = true;
+
+            try {
+                // Petición al Apps Script para revisar credenciales
+                const url = `${API_URL}?action=login&nombre=${encodeURIComponent(name)}&celular=${encodeURIComponent(phone)}`;
+                const response = await fetch(url);
+                
+                if (!response.ok) throw new Error("Error conectando con la base de datos.");
+                const result = await response.json();
+
+                if (result.error) {
+                    throw new Error(result.error);
+                }
+
+                // SI ES EXITOSO: Guardar en local y dejar entrar
+                localStorage.setItem("polis_session", JSON.stringify(result.user));
+                document.getElementById("user-display-name").innerText = result.user.nombre;
+                
+                document.getElementById("login-screen").classList.add("hidden");
+                showToast(`¡Acceso Autorizado!`);
+                loadTaskCounter();
+                fetchData();
+
+            } catch (err) {
+                errorMsg.innerText = err.message;
+                errorMsg.classList.remove("hidden");
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<span>Ingresar al Sistema</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>`;
+                lucide.createIcons();
+            }
+        }
+
+        // FUNCIÓN DE LOGOUT
+        function logout() {
+            localStorage.removeItem("polis_session");
+            document.getElementById("feed-container").innerHTML = "";
+            document.getElementById("login-name").value = "";
+            document.getElementById("login-phone").value = "";
+            document.getElementById("login-screen").classList.remove("hidden");
+        }
+
+        // ============================================
+        // FUNCIONES CORE (FEED Y TAREAS)
+        // ============================================
 
         function loadTaskCounter() {
             const count = localStorage.getItem('polis_tasks_done_total') || "0";
@@ -156,30 +300,25 @@
             const container = document.getElementById("feed-container");
             container.innerHTML = `<div class="text-center py-16 text-slate-500 text-xs animate-pulse">Sincronizando canal: ${currentSection}...</div>`;
 
-            if (API_URL.startsWith("https://script.google.com/macros/s/AKfycbx3ImLmqnL20__4UGl7aEak-WmDAgi0k05mrKZDDxQdYh0AoFIEt57hRJ1VKzSgVaaWcA/exec")) {
+            if (API_URL.includes("OLVIDASTE_PEGAR")) {
                 container.innerHTML = `
                     <div class="text-center py-12 px-4 border border-amber-500/20 bg-amber-500/5 rounded-2xl">
                         <p class="text-amber-400 text-xs font-semibold">Falta el enlace a la API</p>
-                        <p class="text-[10px] text-slate-500 mt-1">Recuerda pegar el enlace de tu Google Apps Script en la variable API_URL en el código.</p>
+                        <p class="text-[10px] text-slate-500 mt-1">Pega la URL del Google Apps Script en tu código fuente.</p>
                     </div>`;
                 if (syncBtn) syncBtn.classList.remove('animate-spin');
                 return;
             }
 
             try {
-                // Hacemos la petición a nuestra nueva API enviando la sección deseada
-                // Ya no peleamos con CSVs ni gids, le pasamos directamente el nombre de la pestaña.
-                const url = `${API_URL}?section=${encodeURIComponent(currentSection)}`;
+                // Petición pidiendo los datos (action=feed por defecto si no ponemos nada en el script backend, pero le enviamos explícitamente para estar seguros)
+                const url = `${API_URL}?action=feed&section=${encodeURIComponent(currentSection)}`;
                 const response = await fetch(url);
                 
                 if (!response.ok) throw new Error(`Error de conexión HTTP: ${response.status}`);
-                
-                // La API ya devuelve el JSON armadito
                 const result = await response.json();
                 
-                if (result.error) {
-                    throw new Error(result.error);
-                }
+                if (result.error) throw new Error(result.error);
                 
                 feedData = result.sort((a, b) => parseInt(b.id || 0) - parseInt(a.id || 0));
                 renderFeed();
@@ -257,8 +396,8 @@
                     actionArea = `
                         <div class="flex flex-col space-y-2 pt-1">
                             ${flyerBtn}
-                            <button onclick="copyToClipboard('${escapeHTML(resumen)}', 'Texto de asignación copiado.'); markActionCompleted('${id}')" class="w-full h-10 rounded-xl bg-slate-800 text-slate-300 text-xs font-semibold flex items-center justify-center gap-1.5 border border-slate-700 active:scale-95 transition-all">
-                                <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copiar Guión / Tarea
+                            <button onclick="copyToClipboard('${escapeHTML(resumen)}', 'Texto copiado.'); markActionCompleted('${id}')" class="w-full h-10 rounded-xl bg-slate-800 text-slate-300 text-xs font-semibold flex items-center justify-center gap-1.5 border border-slate-700 active:scale-95 transition-all">
+                                <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copiar Tarea
                             </button>
                         </div>
                     `;
@@ -276,7 +415,7 @@
                 } else if (currentSection === "Mapas") {
                     actionArea = `
                         <button onclick="openReaderModal('${escapeHTML(link)}', '${escapeHTML(fuente)}')" class="w-full h-11 rounded-xl bg-emerald-600 text-white text-xs font-bold flex items-center justify-center gap-2 active:scale-95 transition-all shadow-lg shadow-emerald-600/10">
-                            <i data-lucide="map-pin" class="w-4 h-4"></i> Desplegar Coordenadas HMO
+                            <i data-lucide="map-pin" class="w-4 h-4"></i> Desplegar Mapa
                         </button>
                     `;
                 }
@@ -374,7 +513,7 @@
                     });
                 `;
                 const blob = new Blob([swCode], { type: 'application/javascript' });
-                navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(err => console.log("SW Status: Local simulation mode"));
+                navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(err => console.log("SW Status: Local mode"));
             }
         }
     </script>
