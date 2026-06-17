@@ -4,13 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>AgoraPolis Búnker</title>
-    
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#0f172a">
-    
     <link rel="manifest" id="pwa-manifest">
-    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -20,15 +17,18 @@
         .glass-header { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(225, 29, 72, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(225, 29, 72, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(225, 29, 72, 0); }
+        }
+        .sos-pulse { animation: pulse-red 2s infinite; }
     </style>
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col pb-24 antialiased">
 
-    <!-- ============================================== -->
-    <!-- PANTALLA DE ACCESO DE MIEMBROS (LOGIN) -->
-    <!-- ============================================== -->
-    <div id="login-screen" class="fixed inset-0 z-50 bg-slate-900 flex flex-col justify-center items-center px-6 transition-opacity duration-300">
-        <!-- Decoración de fondo -->
+    <!-- LOGIN -->
+    <div id="login-screen" class="fixed inset-0 z-[70] bg-slate-900 flex flex-col justify-center items-center px-6 transition-opacity duration-300">
         <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
             <div class="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] bg-indigo-600/20 blur-[120px] rounded-full"></div>
             <div class="absolute bottom-[10%] -right-[10%] w-[60%] h-[60%] bg-purple-600/20 blur-[120px] rounded-full"></div>
@@ -48,18 +48,18 @@
                     <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">Nombre Completo</label>
                     <div class="relative">
                         <i data-lucide="user" class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-500"></i>
-                        <input type="text" id="login-name" class="w-full h-12 bg-slate-900/50 border border-slate-700/80 rounded-xl pl-10 pr-4 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all" placeholder="Tal cual como está registrado">
+                        <input type="text" id="login-name" class="w-full h-12 bg-slate-900/50 border border-slate-700/80 rounded-xl pl-10 pr-4 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-indigo-500 transition-all">
                     </div>
                 </div>
                 <div>
-                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">Celular de Contacto</label>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">Celular</label>
                     <div class="relative">
                         <i data-lucide="phone" class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-500"></i>
-                        <input type="tel" id="login-phone" class="w-full h-12 bg-slate-900/50 border border-slate-700/80 rounded-xl pl-10 pr-4 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all" placeholder="Número celular">
+                        <input type="tel" id="login-phone" class="w-full h-12 bg-slate-900/50 border border-slate-700/80 rounded-xl pl-10 pr-4 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-indigo-500 transition-all">
                     </div>
                 </div>
-                <button id="login-btn" onclick="attemptLogin()" class="w-full h-12 mt-6 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold rounded-xl flex items-center justify-center gap-2 active:scale-95 transition-all shadow-lg shadow-indigo-500/25 border border-indigo-500/50">
-                    <span>Ingresar al Sistema</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                <button id="login-btn" onclick="attemptLogin()" class="w-full h-12 mt-6 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold rounded-xl flex items-center justify-center gap-2 active:scale-95 transition-all shadow-lg border border-indigo-500/50">
+                    <span>Ingresar</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>
                 </button>
                 <p id="login-error" class="text-rose-400 text-[11px] text-center font-semibold mt-4 hidden bg-rose-500/10 border border-rose-500/20 py-2 rounded-lg"></p>
             </div>
@@ -67,9 +67,33 @@
     </div>
 
 
-    <!-- ============================================== -->
-    <!-- INTERFAZ PRINCIPAL DE LA APP -->
-    <!-- ============================================== -->
+    <!-- MODAL MENSAJE DEL DÍA (Línea del Día) -->
+    <div id="motd-modal" class="hidden fixed inset-0 z-[60] bg-slate-950/95 backdrop-blur-md flex flex-col justify-center items-center px-4">
+        <div class="bg-slate-800 border border-indigo-500/30 w-full max-w-sm rounded-3xl p-6 shadow-2xl relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-indigo-500/20 blur-[50px] rounded-full pointer-events-none"></div>
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 rounded-full bg-indigo-500/20 flex items-center justify-center border border-indigo-500/30">
+                    <i data-lucide="megaphone" class="w-5 h-5 text-indigo-400"></i>
+                </div>
+                <div>
+                    <h3 class="text-white font-bold text-lg leading-tight">La Línea del Día</h3>
+                    <p class="text-indigo-400 text-[10px] font-bold uppercase tracking-wider">Instrucción Prioritaria</p>
+                </div>
+            </div>
+            
+            <div class="bg-slate-900/50 border border-slate-700/50 rounded-xl p-4 mb-6">
+                <p id="motd-text" class="text-slate-300 text-sm leading-relaxed whitespace-pre-wrap"></p>
+                <a id="motd-link" href="#" target="_blank" class="hidden mt-3 text-indigo-400 hover:text-indigo-300 text-xs font-bold flex items-center gap-1">
+                    <i data-lucide="link" class="w-3.5 h-3.5"></i> Abrir Enlace Adjunto
+                </a>
+            </div>
+            
+            <button id="motd-btn-enterado" class="w-full h-12 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl flex items-center justify-center gap-2 active:scale-95 transition-all shadow-lg shadow-indigo-600/20">
+                <i data-lucide="check-square" class="w-4 h-4"></i> Enterado
+            </button>
+        </div>
+    </div>
+
 
     <!-- CABECERA -->
     <header class="fixed top-0 left-0 right-0 z-40 glass-header border-b border-slate-800/60 px-4 py-3.5">
@@ -85,6 +109,9 @@
             </div>
             
             <div class="flex items-center gap-2">
+                <button id="btn-header-mensaje" class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700/80 flex items-center justify-center active:scale-95 transition-all hover:bg-slate-700">
+                    <i data-lucide="megaphone" class="w-4 h-4 text-indigo-400"></i>
+                </button>
                 <div class="bg-slate-800/80 border border-slate-700/50 rounded-xl px-3 h-10 flex items-center gap-2 shadow-inner">
                     <i data-lucide="star" class="w-4 h-4 text-amber-400 fill-amber-400"></i>
                     <div class="text-left">
@@ -99,17 +126,24 @@
         </div>
     </header>
 
-    <!-- ALERTA SMART FLOTANTE -->
-    <div id="toast" class="hidden fixed top-20 left-1/2 transform -translate-x-1/2 z-50 bg-slate-800/95 text-emerald-400 text-xs font-bold px-4 py-3 rounded-xl shadow-2xl border border-emerald-500/30 flex items-center gap-2 transition-all backdrop-blur-md">
+    <div id="toast" class="hidden fixed top-20 left-1/2 transform -translate-x-1/2 z-[80] bg-slate-800/95 text-emerald-400 text-xs font-bold px-4 py-3 rounded-xl shadow-2xl border border-emerald-500/30 flex items-center gap-2 transition-all backdrop-blur-md">
         <i data-lucide="check-circle" class="w-4 h-4"></i> <span id="toast-text">Completado</span>
     </div>
 
-    <!-- CONTENEDOR DE CONTENIDO -->
+    <!-- BOTÓN SOS FLOTANTE -->
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSdXg10XVS7HIvLWc1Dg3CV_89ibuD38Ft4eR4gTwKKgRCPnjA/viewform?usp=header" target="_blank" 
+       class="fixed bottom-20 right-4 z-50 w-14 h-14 bg-gradient-to-tr from-rose-600 to-rose-500 rounded-full shadow-lg shadow-rose-600/40 flex flex-col items-center justify-center border border-rose-400 hover:scale-105 active:scale-95 transition-transform sos-pulse">
+        <i data-lucide="siren" class="w-6 h-6 text-white mb-0.5"></i>
+        <span class="text-[8px] font-black text-white uppercase leading-none tracking-widest">SOS</span>
+    </a>
+
     <main class="flex-1 max-w-xl w-full mx-auto px-4 pt-24 space-y-4">
-        <!-- Tarjeta de Bienvenida Personalizada -->
         <div id="welcome-card" class="bg-indigo-600/10 border border-indigo-500/20 rounded-2xl p-4 flex items-center justify-between mb-2">
             <div>
-                <p class="text-[10px] text-indigo-400 font-bold uppercase tracking-wider mb-0.5">Miembro Activo</p>
+                <div class="flex items-center gap-2 mb-0.5">
+                    <p class="text-[10px] text-indigo-400 font-bold uppercase tracking-wider">Miembro Activo</p>
+                    <span id="user-level-badge" class="bg-indigo-500/20 text-indigo-300 text-[9px] font-black px-1.5 py-0.5 rounded border border-indigo-500/30 uppercase">Nivel 1</span>
+                </div>
                 <h3 id="user-display-name" class="text-sm font-bold text-white">Agente</h3>
             </div>
             <button onclick="logout()" class="text-slate-400 hover:text-white transition-colors bg-slate-800 p-2 rounded-lg border border-slate-700">
@@ -158,7 +192,6 @@
         </div>
     </nav>
 
-    <!-- VISOR IN-APP -->
     <div id="reader-modal" class="hidden fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex flex-col justify-end sm:justify-center p-0">
         <div class="bg-slate-900 w-full max-w-xl mx-auto h-[92vh] rounded-t-3xl border-t border-slate-800 flex flex-col overflow-hidden shadow-2xl">
             <div class="px-4 py-3 bg-slate-800/60 border-b border-slate-800 flex items-center justify-between">
@@ -167,21 +200,16 @@
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
-            <div class="flex-1 w-full bg-white">
-                <iframe id="news-frame" src="" class="w-full h-full border-0 bg-white" allow="geolocation"></iframe>
+            <div class="flex-1 w-full bg-white relative">
+                <iframe id="news-frame" src="" class="w-full h-full border-0 bg-white" sandbox="allow-same-origin allow-scripts allow-popups allow-forms"></iframe>
             </div>
         </div>
     </div>
 
     <!-- SCRIPT PRINCIPAL -->
     <script>
-        // 🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨
-        // PEGA AQUÍ LA URL QUE TE DIO GOOGLE APPS SCRIPT AL TERMINAR DE IMPLEMENTAR.
-        // DEBE EMPEZAR CON "https://script.google.com/macros/s/...."
-        
+        // 🚨 PEGA AQUÍ TU NUEVA URL DEL GOOGLE APPS SCRIPT 🚨
         const API_URL = "https://script.google.com/macros/s/AKfycbx3ImLmqnL20__4UGl7aEak-WmDAgi0k05mrKZDDxQdYh0AoFIEt57hRJ1VKzSgVaaWcA/exec"; 
-        
-        // 🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨
 
         let currentSection = "Periodismo"; 
         let feedData = [];
@@ -190,23 +218,20 @@
             setupPWAComponents();
             lucide.createIcons();
             
-            // VERIFICACIÓN DE SESIÓN ACTIVA AL ENTRAR A LA APP
             const session = localStorage.getItem("polis_session");
             if (session) {
-                // Si ya está logueado, ocultamos la pantalla de login y cargamos todo
                 document.getElementById("login-screen").classList.add("hidden");
                 const userObj = JSON.parse(session);
                 document.getElementById("user-display-name").innerText = userObj.nombre;
                 
                 loadTaskCounter();
                 fetchData();
+                fetchMensajeDelDia(); 
             } else {
-                // Si no hay sesión, obligamos a iniciar mostrando la pantalla
                 document.getElementById("login-screen").classList.remove("hidden");
             }
         });
 
-        // FUNCIÓN DE LOGIN
         async function attemptLogin() {
             const name = document.getElementById("login-name").value;
             const phone = document.getElementById("login-phone").value;
@@ -219,8 +244,8 @@
                 return;
             }
 
-            if (API_URL.includes("OLVIDASTE_PEGAR")) {
-                errorMsg.innerText = "Error: Falta configurar la URL de la API en el código.";
+            if (API_URL.includes("LA_URL_AQUI")) {
+                errorMsg.innerText = "Error: Falta configurar la URL de la API en tu código.";
                 errorMsg.classList.remove("hidden");
                 return;
             }
@@ -231,18 +256,13 @@
             btn.disabled = true;
 
             try {
-                // Petición al Apps Script para revisar credenciales
                 const url = `${API_URL}?action=login&nombre=${encodeURIComponent(name)}&celular=${encodeURIComponent(phone)}`;
                 const response = await fetch(url);
-                
                 if (!response.ok) throw new Error("Error conectando con la base de datos.");
                 const result = await response.json();
 
-                if (result.error) {
-                    throw new Error(result.error);
-                }
+                if (result.error) throw new Error(result.error);
 
-                // SI ES EXITOSO: Guardar en local y dejar entrar
                 localStorage.setItem("polis_session", JSON.stringify(result.user));
                 document.getElementById("user-display-name").innerText = result.user.nombre;
                 
@@ -250,18 +270,18 @@
                 showToast(`¡Acceso Autorizado!`);
                 loadTaskCounter();
                 fetchData();
+                fetchMensajeDelDia();
 
             } catch (err) {
                 errorMsg.innerText = err.message;
                 errorMsg.classList.remove("hidden");
             } finally {
                 btn.disabled = false;
-                btn.innerHTML = `<span>Ingresar al Sistema</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>`;
+                btn.innerHTML = `<span>Ingresar</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>`;
                 lucide.createIcons();
             }
         }
 
-        // FUNCIÓN DE LOGOUT
         function logout() {
             localStorage.removeItem("polis_session");
             document.getElementById("feed-container").innerHTML = "";
@@ -270,13 +290,53 @@
             document.getElementById("login-screen").classList.remove("hidden");
         }
 
-        // ============================================
-        // FUNCIONES CORE (FEED Y TAREAS)
-        // ============================================
+        async function fetchMensajeDelDia() {
+            if (API_URL.includes("LA_URL_AQUI")) return;
+            try {
+                const url = `${API_URL}?action=mensaje`;
+                const response = await fetch(url);
+                if (!response.ok) return;
+                
+                const data = await response.json();
+                if (data.error || !data.id) return;
+                
+                document.getElementById('motd-text').innerText = data.mensaje;
+                if(data.link) {
+                    document.getElementById('motd-link').href = data.link;
+                    document.getElementById('motd-link').classList.remove('hidden');
+                } else {
+                    document.getElementById('motd-link').classList.add('hidden');
+                }
+                
+                const lastRead = localStorage.getItem('polis_last_message_read');
+                const btnEnterado = document.getElementById('motd-btn-enterado');
+                
+                if (lastRead !== data.id) {
+                    document.getElementById('motd-modal').classList.remove('hidden');
+                    btnEnterado.onclick = () => {
+                        localStorage.setItem('polis_last_message_read', data.id);
+                        document.getElementById('motd-modal').classList.add('hidden');
+                    };
+                }
+                
+                document.getElementById('btn-header-mensaje').onclick = () => {
+                    document.getElementById('motd-modal').classList.remove('hidden');
+                    btnEnterado.onclick = () => {
+                        document.getElementById('motd-modal').classList.add('hidden');
+                    };
+                };
+                
+            } catch(err) {
+                console.log("Error cargando mensaje:", err);
+            }
+        }
 
         function loadTaskCounter() {
-            const count = localStorage.getItem('polis_tasks_done_total') || "0";
-            document.getElementById('task-counter').innerText = count;
+            const total = parseInt(localStorage.getItem('polis_tasks_done_total') || "0");
+            document.getElementById('task-counter').innerText = total;
+            
+            const nivel = Math.floor(total / 5) + 1;
+            document.getElementById('user-level-badge').innerText = `Nivel ${nivel}`;
         }
 
         function markActionCompleted(id) {
@@ -298,36 +358,26 @@
 
             feedData = []; 
             const container = document.getElementById("feed-container");
-            container.innerHTML = `<div class="text-center py-16 text-slate-500 text-xs animate-pulse">Sincronizando canal: ${currentSection}...</div>`;
+            container.innerHTML = `<div class="text-center py-16 text-slate-500 text-xs animate-pulse">Sincronizando: ${currentSection}...</div>`;
 
-            if (API_URL.includes("OLVIDASTE_PEGAR")) {
-                container.innerHTML = `
-                    <div class="text-center py-12 px-4 border border-amber-500/20 bg-amber-500/5 rounded-2xl">
-                        <p class="text-amber-400 text-xs font-semibold">Falta el enlace a la API</p>
-                        <p class="text-[10px] text-slate-500 mt-1">Pega la URL del Google Apps Script en tu código fuente.</p>
-                    </div>`;
+            if (API_URL.includes("LA_URL_AQUI")) {
+                container.innerHTML = `<div class="text-center py-12 px-4 border border-amber-500/20 bg-amber-500/5 rounded-2xl"><p class="text-amber-400 text-xs font-semibold">Falta el enlace a la API</p></div>`;
                 if (syncBtn) syncBtn.classList.remove('animate-spin');
                 return;
             }
 
             try {
-                // Petición pidiendo los datos (action=feed por defecto si no ponemos nada en el script backend, pero le enviamos explícitamente para estar seguros)
                 const url = `${API_URL}?action=feed&section=${encodeURIComponent(currentSection)}`;
                 const response = await fetch(url);
+                if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
                 
-                if (!response.ok) throw new Error(`Error de conexión HTTP: ${response.status}`);
                 const result = await response.json();
-                
                 if (result.error) throw new Error(result.error);
                 
                 feedData = result.sort((a, b) => parseInt(b.id || 0) - parseInt(a.id || 0));
                 renderFeed();
             } catch (err) {
-                container.innerHTML = `
-                    <div class="text-center py-12 px-4 border border-rose-500/20 bg-rose-500/5 rounded-2xl">
-                        <p class="text-rose-400 text-xs font-semibold">Error al obtener "${currentSection}"</p>
-                        <p class="text-[10px] text-slate-500 mt-2">${err.message}</p>
-                    </div>`;
+                container.innerHTML = `<div class="text-center py-12 px-4 border border-rose-500/20 bg-rose-500/5 rounded-2xl"><p class="text-rose-400 text-xs font-semibold">Error al obtener "${currentSection}"</p><p class="text-[10px] text-slate-500 mt-2">${err.message}</p></div>`;
             } finally {
                 if (syncBtn) syncBtn.classList.remove('animate-spin');
             }
@@ -346,7 +396,7 @@
             });
 
             if (filtered.length === 0) {
-                container.innerHTML = `<div class="text-center py-16 text-slate-600 text-xs font-medium">No se encontraron registros en esta división.</div>`;
+                container.innerHTML = `<div class="text-center py-16 text-slate-600 text-xs font-medium">Sin instrucciones activas.</div>`;
                 return;
             }
 
@@ -355,7 +405,7 @@
                 const id = item.id || Math.random();
                 const title = item.titulo || "Sin título";
                 const resumen = item.resumen || "";
-                const fuente = item.fuente || "Mesa Operativa";
+                const fuente = item.fuente || "Estrategia Central";
                 const tematica = item.tematica || "Info";
                 const link = item.link || "";
                 const img = item.imagen || "";
@@ -367,66 +417,76 @@
                     ? "bg-slate-800/10 border border-slate-800/40 opacity-50 rounded-2xl p-4 flex flex-col space-y-3 transition-all" 
                     : "bg-slate-800/40 border border-slate-800/80 rounded-2xl p-4 flex flex-col space-y-3 shadow-md hover:border-slate-700 transition-all";
 
-                let mediaHTML = img ? `<div class="w-full max-h-48 rounded-xl overflow-hidden border border-slate-700/40 bg-slate-900"><img src="${escapeHTML(img)}" class="w-full h-full object-cover" loading="lazy"></div>` : "";
+                let imgClass = currentSection === "Materiales" ? "w-full h-48 object-contain bg-slate-950" : "w-full h-48 object-cover";
+                let mediaHTML = img ? `<div class="w-full rounded-xl overflow-hidden border border-slate-700/40 bg-slate-900"><img src="${escapeHTML(img)}" class="${imgClass}" loading="lazy"></div>` : "";
+                
                 let actionArea = "";
 
                 if (currentSection === "Periodismo") {
+                    let shareText = `*${escapeHTML(title)}*\n\n${escapeHTML(resumen)}\n\n🔗 ${escapeHTML(link)}`;
                     actionArea = `
                         <div class="grid grid-cols-2 gap-2 pt-1">
-                            <button onclick="openReaderModal('${escapeHTML(link)}', '${escapeHTML(fuente)}')" class="h-10 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 transition-all">
-                                <i data-lucide="eye" class="w-3.5 h-3.5"></i> Ver Reporte
+                            <button onclick="openReaderModal('${escapeHTML(link)}', '${escapeHTML(fuente)}')" class="h-10 rounded-xl bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 transition-all">
+                                <i data-lucide="eye" class="w-3.5 h-3.5"></i> Leer Nota
                             </button>
-                            <button onclick="copyToClipboard('${escapeHTML(link)}', '¡Enlace copiado al portapapeles!'); markActionCompleted('${id}')" class="h-10 rounded-xl bg-slate-800 text-slate-200 text-xs font-semibold flex items-center justify-center gap-1.5 border border-slate-700 active:scale-95 transition-all">
-                                <i data-lucide="share" class="w-3.5 h-3.5"></i> Copiar Link
+                            <button onclick="copyToClipboard(\`${shareText}\`, 'Nota copiada lista para WhatsApp'); markActionCompleted('${id}')" class="h-10 rounded-xl bg-indigo-600 text-white text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 transition-all">
+                                <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copiar Resumen
                             </button>
                         </div>
                     `;
                 } else if (currentSection === "Tendencias") {
                     actionArea = `
-                        <a href="${escapeHTML(link)}" target="_blank" rel="noopener noreferrer" onclick="markActionCompleted('${id}')" class="w-full h-10 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-xs font-bold flex items-center justify-center gap-2 active:scale-95 transition-all shadow-md shadow-indigo-600/10">
-                            <i data-lucide="external-link" class="w-4 h-4"></i> Abrir en ${tematica}
-                        </a>
+                        <div class="flex flex-col space-y-2 pt-1">
+                            <div class="flex gap-2">
+                                <button onclick="copyToClipboard('${escapeHTML(resumen)}', 'Hashtags / Slogan copiados'); markActionCompleted('${id}')" class="flex-1 h-10 rounded-xl bg-slate-800 text-slate-300 text-[10px] font-bold flex items-center justify-center gap-1.5 border border-slate-700 active:scale-95 transition-all">
+                                    <i data-lucide="hash" class="w-3.5 h-3.5"></i> Copiar Hashtags
+                                </button>
+                                <button onclick="copyToClipboard('${escapeHTML(title)}', 'Mensaje sugerido copiado'); markActionCompleted('${id}')" class="flex-1 h-10 rounded-xl bg-slate-800 text-slate-300 text-[10px] font-bold flex items-center justify-center gap-1.5 border border-slate-700 active:scale-95 transition-all">
+                                    <i data-lucide="message-square" class="w-3.5 h-3.5"></i> Mensaje Oficial
+                                </button>
+                            </div>
+                            <a href="${escapeHTML(link)}" target="_blank" onclick="markActionCompleted('${id}')" class="w-full h-11 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-xs font-bold flex items-center justify-center gap-2 active:scale-95 transition-all shadow-md">
+                                <i data-lucide="external-link" class="w-4 h-4"></i> Ir a Interactuar
+                            </a>
+                        </div>
                     `;
                 } else if (currentSection === "Estrategia") {
-                    let flyerBtn = img ? `
-                        <button onclick="copyToClipboard('${escapeHTML(img)}', '¡Enlace del flyer listo!'); markActionCompleted('${id}')" class="w-full h-10 rounded-xl bg-indigo-600 text-white text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 transition-all">
-                            <i data-lucide="image" class="w-3.5 h-3.5"></i> Obtener Imagen
-                        </button>
-                    ` : "";
                     actionArea = `
                         <div class="flex flex-col space-y-2 pt-1">
-                            ${flyerBtn}
-                            <button onclick="copyToClipboard('${escapeHTML(resumen)}', 'Texto copiado.'); markActionCompleted('${id}')" class="w-full h-10 rounded-xl bg-slate-800 text-slate-300 text-xs font-semibold flex items-center justify-center gap-1.5 border border-slate-700 active:scale-95 transition-all">
-                                <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copiar Tarea
+                            <a href="${escapeHTML(link)}" target="_blank" onclick="markActionCompleted('${id}')" class="w-full h-11 rounded-xl bg-emerald-600 text-white text-xs font-bold flex items-center justify-center gap-2 active:scale-95 transition-all shadow-md shadow-emerald-600/20">
+                                <i data-lucide="map-pin" class="w-4 h-4"></i> Abrir Ubicación / Evento
+                            </a>
+                            <button onclick="copyToClipboard('${escapeHTML(resumen)}', 'Instrucciones copiadas.'); markActionCompleted('${id}')" class="w-full h-10 rounded-xl bg-slate-800 text-slate-300 text-[10px] font-bold flex items-center justify-center gap-1.5 border border-slate-700 active:scale-95 transition-all">
+                                <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copiar Instrucciones
                             </button>
                         </div>
                     `;
                 } else if (currentSection === "Materiales") {
                     actionArea = `
                         <div class="grid grid-cols-2 gap-2 pt-1">
-                            <a href="${escapeHTML(link)}" target="_blank" rel="noopener noreferrer" class="h-10 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 transition-all">
-                                <i data-lucide="cloud-download" class="w-3.5 h-3.5"></i> Descargar
+                            <a href="${escapeHTML(link)}" target="_blank" download class="h-10 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-[11px] font-bold flex items-center justify-center gap-1.5 active:scale-95 transition-all">
+                                <i data-lucide="download-cloud" class="w-3.5 h-3.5"></i> Descargar
                             </a>
-                            <button onclick="copyToClipboard('${escapeHTML(link)}', 'Acceso copiado')" class="h-10 rounded-xl bg-slate-800 border border-slate-700 text-slate-300 text-xs font-semibold flex items-center justify-center gap-1.5 active:scale-95 transition-all">
-                                <i data-lucide="copy" class="w-3.5 h-3.5"></i> Compartir
+                            <button onclick="copyToClipboard('${escapeHTML(link)}', 'Enlace de material copiado'); markActionCompleted('${id}')" class="h-10 rounded-xl bg-slate-800 border border-slate-700 text-slate-300 text-[11px] font-bold flex items-center justify-center gap-1.5 active:scale-95 transition-all">
+                                <i data-lucide="link" class="w-3.5 h-3.5"></i> Copiar Link
                             </button>
                         </div>
                     `;
                 } else if (currentSection === "Mapas") {
                     actionArea = `
-                        <button onclick="openReaderModal('${escapeHTML(link)}', '${escapeHTML(fuente)}')" class="w-full h-11 rounded-xl bg-emerald-600 text-white text-xs font-bold flex items-center justify-center gap-2 active:scale-95 transition-all shadow-lg shadow-emerald-600/10">
-                            <i data-lucide="map-pin" class="w-4 h-4"></i> Desplegar Mapa
-                        </button>
+                        <a href="${escapeHTML(link)}" target="_blank" onclick="markActionCompleted('${id}')" class="w-full h-11 rounded-xl bg-emerald-600 text-white text-xs font-bold flex items-center justify-center gap-2 active:scale-95 transition-all shadow-lg shadow-emerald-600/20">
+                            <i data-lucide="map" class="w-4 h-4"></i> Abrir App de Mapas
+                        </a>
                     `;
                 }
 
                 card.innerHTML = `
-                    <div class="flex items-center justify-between">
+                    <div class="flex items-center justify-between mb-1">
                         <span class="text-xs font-bold text-indigo-400 tracking-wide">${escapeHTML(fuente)}</span>
                         <span class="text-[9px] font-black uppercase tracking-wider bg-slate-800 border border-slate-700 px-2 py-0.5 rounded-lg text-slate-400">${escapeHTML(tematica)}</span>
                     </div>
                     ${mediaHTML}
-                    <div class="flex items-start justify-between gap-3">
+                    <div class="flex items-start justify-between gap-3 mt-2">
                         <h2 class="text-sm font-bold text-white leading-snug flex-1">${escapeHTML(title)}</h2>
                         ${isCompleted ? `<span class="bg-emerald-500/20 text-emerald-400 text-[8px] font-bold px-1.5 py-0.5 rounded border border-emerald-500/20">Atendido</span>` : ''}
                     </div>
@@ -457,7 +517,7 @@
 
         function openReaderModal(url, fuente) {
             if(!url) return;
-            document.getElementById("modal-source-badge").innerText = `Zona: ${fuente}`;
+            document.getElementById("modal-source-badge").innerText = `Fuente: ${fuente}`;
             document.getElementById("news-frame").src = url;
             document.getElementById("reader-modal").classList.remove("hidden");
         }
@@ -487,8 +547,8 @@
 
         function setupPWAComponents() {
             const manifestObj = {
-                "name": "AgoraPolis App",
-                "short_name": "AgoraPolis",
+                "name": "AgoraPolis Búnker",
+                "short_name": "Búnker",
                 "start_url": ".",
                 "display": "standalone",
                 "background_color": "#0f172a",
@@ -503,7 +563,7 @@
 
             if ('serviceWorker' in navigator) {
                 const swCode = `
-                    const CACHE_NAME = 'polis-v2';
+                    const CACHE_NAME = 'polis-v3';
                     self.addEventListener('install', e => self.skipWaiting());
                     self.addEventListener('activate', e => e.waitUntil(clients.claim()));
                     self.addEventListener('fetch', e => {
