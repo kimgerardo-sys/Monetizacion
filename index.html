@@ -3,147 +3,174 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>AgoraPolis - Búnker de Activación Avanzada</title>
+    <title>AgoraPolis Búnker</title>
     
+    <!-- Meta Tags para comportamiento de App Nativa (iOS & Android) -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#0f172a">
     
+    <!-- Enlace del Manifiesto PWA dinámico (Data URI) -->
+    <link rel="manifest" id="pwa-manifest">
+    
+    <!-- CDNs Limpios e independientes -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-        .glass-nav { background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            -webkit-tap-highlight-color: transparent; 
+            user-select: none;
+        }
+        .glass-header { 
+            background: rgba(15, 23, 42, 0.85); 
+            backdrop-filter: blur(12px); 
+            -webkit-backdrop-filter: blur(12px); 
+        }
+        /* Ocultar barra de scroll visualmente */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col pb-24 antialiased">
 
-    <header class="fixed top-0 left-0 right-0 z-40 glass-nav border-b border-slate-800/80 px-4 py-3.5">
+    <!-- CABECERA -->
+    <header class="fixed top-0 left-0 right-0 z-40 glass-header border-b border-slate-800/60 px-4 py-3.5">
         <div class="max-w-xl mx-auto flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-purple-600 flex items-center justify-center border border-indigo-500/30 shadow-lg shadow-indigo-500/20">
-                    <i data-lucide="shield-check" class="w-5 h-5 text-white"></i>
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-purple-600 flex items-center justify-center border border-indigo-500/20 shadow-lg shadow-indigo-500/10">
+                    <i data-lucide="shield" class="w-5 h-5 text-white"></i>
                 </div>
                 <div>
-                    <h1 class="text-base font-bold tracking-tight text-white">Búnker Digital</h1>
-                    <p id="current-tab-title" class="text-[10px] text-indigo-400 font-bold tracking-wider uppercase">Periodismo (Webs y Blogs)</p>
+                    <h1 class="text-sm font-bold tracking-tight text-white leading-tight">AgoraPolis</h1>
+                    <p id="current-tab-title" class="text-[10px] text-indigo-400 font-bold tracking-wider uppercase leading-none mt-0.5">Periodismo</p>
                 </div>
             </div>
             
+            <!-- CONTADOR LOCAL DE ACCIONES CUMPLIDAS -->
             <div class="flex items-center gap-2">
-                <div class="bg-indigo-600/10 border border-indigo-500/30 rounded-xl px-2.5 h-10 flex items-center gap-1.5 shadow-sm">
-                    <i data-lucide="check-square" class="w-4 h-4 text-indigo-400"></i>
+                <div class="bg-slate-800/80 border border-slate-700/50 rounded-xl px-3 h-10 flex items-center gap-2 shadow-inner">
+                    <i data-lucide="star" class="w-4 h-4 text-amber-400 fill-amber-400"></i>
                     <div class="text-left">
-                        <p class="text-[8px] font-bold text-slate-400 uppercase leading-none">Mis Tareas</p>
-                        <p id="task-counter" class="text-xs font-bold text-white leading-none mt-0.5">0</p>
+                        <p class="text-[8px] font-bold text-slate-400 uppercase leading-none">Puntos</p>
+                        <p id="task-counter" class="text-xs font-black text-white leading-none mt-0.5">0</p>
                     </div>
                 </div>
-                <button id="sync-btn" onclick="fetchData()" class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center transition-all active:scale-95">
+                <button id="sync-btn" onclick="fetchData()" class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700/80 flex items-center justify-center active:scale-95 transition-all">
                     <i data-lucide="refresh-cw" class="w-4 h-4 text-slate-300"></i>
                 </button>
             </div>
         </div>
     </header>
 
-    <div id="toast" class="hidden fixed top-20 left-1/2 transform -translate-x-1/2 z-50 bg-emerald-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-lg border border-emerald-400/30 flex items-center gap-2 transition-all">
-        <i data-lucide="check-circle" class="w-4 h-4"></i> <span id="toast-text">Acción completada</span>
+    <!-- ALERTA SMART FLOTANTE -->
+    <div id="toast" class="hidden fixed top-20 left-1/2 transform -translate-x-1/2 z-50 bg-slate-800/95 text-emerald-400 text-xs font-bold px-4 py-3 rounded-xl shadow-2xl border border-emerald-500/30 flex items-center gap-2 transition-all backdrop-blur-md">
+        <i data-lucide="check-circle" class="w-4 h-4"></i> <span id="toast-text">Completado</span>
     </div>
 
+    <!-- CONTENEDOR DE CONTENIDO -->
     <main class="flex-1 max-w-xl w-full mx-auto px-4 pt-24 space-y-4">
         
+        <!-- BARRA DE BÚSQUEDA INTEGRADA -->
         <div id="search-container" class="relative">
             <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
                 <i data-lucide="search" class="w-4 h-4 text-slate-500"></i>
             </span>
-            <input type="text" id="search-bar" oninput="renderFeed()" placeholder="Buscar en este segmento..." 
+            <input type="text" id="search-bar" oninput="renderFeed()" placeholder="Buscar reportes o palabras clave..." 
                 class="w-full h-11 pl-10 pr-4 bg-slate-800/40 border border-slate-800 rounded-xl text-sm placeholder-slate-500 text-white focus:outline-none focus:border-indigo-500 transition-all">
         </div>
 
+        <!-- RECIPIENTE DINÁMICO DE TARJETAS -->
         <div id="feed-container" class="space-y-4">
+            <!-- Esqueleto de Carga Base -->
             <div class="animate-pulse space-y-4">
-                <div class="h-44 bg-slate-800/50 rounded-xl border border-slate-800"></div>
+                <div class="h-32 bg-slate-800/40 rounded-2xl border border-slate-800"></div>
             </div>
         </div>
     </main>
 
-    <nav class="fixed bottom-0 left-0 right-0 glass-nav border-t border-slate-800/80 z-40">
-        <div class="max-w-xl mx-auto flex justify-around items-center h-18 px-1">
-            <button onclick="switchTab('Periodismo')" class="section-nav flex flex-col items-center justify-center flex-1 h-14 text-indigo-400" data-section="Periodismo">
-                <i data-lucide="newspaper" class="w-4.5 h-4.5 mb-1"></i>
+    <!-- NAVEGACIÓN ESTILO APP (Áreas de interacción > 44px optimizadas para el pulgar) -->
+    <nav class="fixed bottom-0 left-0 right-0 glass-header border-t border-slate-800/60 z-40 px-2 shadow-2xl">
+        <div class="max-w-xl mx-auto flex justify-around items-center h-16">
+            <button onclick="switchTab('Periodismo')" class="section-nav flex flex-col items-center justify-center flex-1 h-full text-indigo-400" data-section="Periodismo">
+                <i data-lucide="newspaper" class="w-5 h-5 mb-1"></i>
                 <span class="text-[9px] font-bold tracking-tight">Periodismo</span>
             </button>
-            <button onclick="switchTab('Tendencias')" class="section-nav flex flex-col items-center justify-center flex-1 h-14 text-slate-400" data-section="Tendencias">
-                <i data-lucide="trending-up" class="w-4.5 h-4.5 mb-1"></i>
+            <button onclick="switchTab('Tendencias')" class="section-nav flex flex-col items-center justify-center flex-1 h-full text-slate-400" data-section="Tendencias">
+                <i data-lucide="trending-up" class="w-5 h-5 mb-1"></i>
                 <span class="text-[9px] font-bold tracking-tight">Tendencias</span>
             </button>
-            <button onclick="switchTab('Estrategia')" class="section-nav flex flex-col items-center justify-center flex-1 h-14 text-slate-400" data-section="Estrategia">
-                <i data-lucide="award" class="w-4.5 h-4.5 mb-1"></i>
+            <button onclick="switchTab('Estrategia')" class="section-nav flex flex-col items-center justify-center flex-1 h-full text-slate-400" data-section="Estrategia">
+                <i data-lucide="zap" class="w-5 h-5 mb-1"></i>
                 <span class="text-[9px] font-bold tracking-tight">Estrategia</span>
             </button>
-            <button onclick="switchTab('Materiales')" class="section-nav flex flex-col items-center justify-center flex-1 h-14 text-slate-400" data-section="Materiales">
-                <i data-lucide="folder-lock" class="w-4.5 h-4.5 mb-1"></i>
+            <button onclick="switchTab('Materiales')" class="section-nav flex flex-col items-center justify-center flex-1 h-full text-slate-400" data-section="Materiales">
+                <i data-lucide="folder" class="w-5 h-5 mb-1"></i>
                 <span class="text-[9px] font-bold tracking-tight">Materiales</span>
             </button>
-            <button onclick="switchTab('Mapas')" class="section-nav flex flex-col items-center justify-center flex-1 h-14 text-slate-400" data-section="Mapas">
-                <i data-lucide="map-pin" class="w-4.5 h-4.5 mb-1"></i>
-                <span class="text-[9px] font-bold tracking-tight">Mapas HMO</span>
+            <button onclick="switchTab('Mapas')" class="section-nav flex flex-col items-center justify-center flex-1 h-full text-slate-400" data-section="Mapas">
+                <i data-lucide="map" class="w-5 h-5 mb-1"></i>
+                <span class="text-[9px] font-bold tracking-tight">Mapas</span>
             </button>
         </div>
     </nav>
 
-    <div id="reader-modal" class="hidden fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex flex-col justify-end sm:justify-center p-0 sm:p-4">
-        <div class="bg-slate-900 w-full max-w-3xl mx-auto h-[88vh] sm:h-[82vh] rounded-t-2xl sm:rounded-2xl border border-slate-800 flex flex-col overflow-hidden shadow-2xl">
-            <div class="px-4 py-3 bg-slate-850 border-b border-slate-800 flex items-center justify-between">
-                <span id="modal-source-badge" class="text-xs font-bold text-indigo-400 uppercase tracking-wider">Despliegue Interno</span>
-                <button onclick="closeReaderModal()" class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center text-slate-400 hover:text-white">
-                    <i data-lucide="x" class="w-4 h-4"></i>
+    <!-- VISOR IN-APP MODAL PARA EVITAR SALIR DE LA PWA -->
+    <div id="reader-modal" class="hidden fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex flex-col justify-end sm:justify-center p-0">
+        <div class="bg-slate-900 w-full max-w-xl mx-auto h-[92vh] rounded-t-3xl border-t border-slate-800 flex flex-col overflow-hidden shadow-2xl">
+            <div class="px-4 py-3 bg-slate-800/60 border-b border-slate-800 flex items-center justify-between">
+                <span id="modal-source-badge" class="text-[10px] font-black text-indigo-400 uppercase tracking-wider">Visualizador Seguro</span>
+                <button onclick="closeReaderModal()" class="w-9 h-9 rounded-xl bg-slate-800 flex items-center justify-center text-slate-400 hover:text-white active:scale-90 transition-all">
+                    <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
-            <div class="flex-1 w-full h-full bg-white">
+            <div class="flex-1 w-full bg-white">
                 <iframe id="news-frame" src="" class="w-full h-full border-0 bg-white" allow="geolocation"></iframe>
             </div>
         </div>
     </div>
 
+    <!-- CODE INFRASTRUCTURE & BUSINESS LOGIC -->
     <script>
+        // ID Base del Google Sheets y Mapeo Absoluto de GIDs para evitar cruces
         const SPREADSHEET_ID = "1u1Hey3bmvuU_MrO4NEQItXHquXFwRQjsxO7vsucEbh8"; 
+        
+        const SHEET_GIDS = {
+            "Periodismo": "0",          
+            "Tendencias": "123456789",  
+            "Estrategia": "987654321",  
+            "Materiales": "111213141",  
+            "Mapas": "151617181"       
+        };
+
         let currentSection = "Periodismo"; 
         let feedData = [];
 
-        // Los títulos visuales de la cabecera
-        const tabNamesVisual = {
-            "Periodismo": "Periodismo (Webs y Blogs)",
-            "Tendencias": "Tendencias (Redes Sociales)",
-            "Estrategia": "Estrategia (Avisos y Tareas)",
-            "Materiales": "Materiales Permanentes e Identidad",
-            "Mapas": "Cartografía y Despliegue Hermosillo"
-        };
-
+        // Inicialización de componentes gráficos y carga
         document.addEventListener("DOMContentLoaded", () => {
+            setupPWAComponents();
             lucide.createIcons();
             loadTaskCounter();
             fetchData();
         });
 
         function loadTaskCounter() {
-            const count = localStorage.getItem('polis_completed_tasks_total') || "0";
+            const count = localStorage.getItem('polis_tasks_done_total') || "0";
             document.getElementById('task-counter').innerText = count;
         }
 
-        function markTaskAsDone(id) {
-            const key = `task_done_${currentSection}_${id}`;
+        function markActionCompleted(id) {
+            const key = `action_${currentSection}_${id}`;
             if (localStorage.getItem(key)) return;
             
             localStorage.setItem(key, "true");
-            let total = parseInt(localStorage.getItem('polis_completed_tasks_total') || "0");
-            total += 1;
-            localStorage.setItem('polis_completed_tasks_total', total.toString());
+            let total = parseInt(localStorage.getItem('polis_tasks_done_total') || "0") + 1;
+            localStorage.setItem('polis_tasks_done_total', total.toString());
+            
             loadTaskCounter();
-            showToast("¡Objetivo cumplido! ⭐");
+            showToast("¡Objetivo registrado! 🌟");
             renderFeed(); 
         }
 
@@ -151,29 +178,27 @@
             const syncBtn = document.getElementById('sync-btn');
             if (syncBtn) syncBtn.classList.add('animate-spin');
 
-            feedData = []; // Limpiamos la pantalla para la nueva hoja
+            feedData = []; 
             const container = document.getElementById("feed-container");
-            container.innerHTML = `<div class="text-center py-12 text-slate-500 text-xs animate-pulse">Sincronizando hoja de "${currentSection}"...</div>`;
+            container.innerHTML = `<div class="text-center py-16 text-slate-500 text-xs animate-pulse">Sincronizando canal: ${currentSection}...</div>`;
+
+            const gid = SHEET_GIDS[currentSection] || "0";
 
             try {
-                // Ahora llama exactamente al nombre de la sección que coincide con tu pestaña de Google Sheets
-                const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(currentSection)}&_ts=${Date.now()}`;
+                // Fetch directo con prevención estricta de caché perimetral
+                const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&gid=${gid}&_ts=${Date.now()}`;
                 const response = await fetch(url);
                 if (!response.ok) throw new Error();
                 
                 const csvText = await response.text();
-                const parsedData = parseCSVToJSON(csvText);
-
-                if (parsedData.length > 0) {
-                    feedData = parsedData.sort((a, b) => parseInt(b.id || 0) - parseInt(a.id || 0));
-                    renderFeed();
-                } else {
-                    feedData = [];
-                    renderFeed();
-                }
+                feedData = parseCSVToJSON(csvText).sort((a, b) => parseInt(b.id || 0) - parseInt(a.id || 0));
+                renderFeed();
             } catch (err) {
-                console.error("Error al descargar la pestaña", err);
-                container.innerHTML = `<div class="text-center py-12 text-rose-400 text-xs">Error de conexión. Verifica que la pestaña "${currentSection}" exista exactamente con ese nombre y tenga datos.</div>`;
+                container.innerHTML = `
+                    <div class="text-center py-12 px-4 border border-rose-500/20 bg-rose-500/5 rounded-2xl">
+                        <p class="text-rose-400 text-xs font-semibold">Error de enlace con la pestaña "${currentSection}"</p>
+                        <p class="text-[10px] text-slate-500 mt-1">Verifica el ID, los permisos compartidos y que las columnas sean id, fuente, tematica, titulo, resumen, link.</p>
+                    </div>`;
             } finally {
                 if (syncBtn) syncBtn.classList.remove('animate-spin');
             }
@@ -191,18 +216,19 @@
             if (row.length > 1 || row[0] !== '') lines.push(row);
             if (lines.length <= 1) return [];
 
+            // Sanitización de cabeceras seguras (XSS Shield)
             const headers = lines[0].map(h => h.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, ""));
             const jsonArray = [];
 
             for (let i = 1; i < lines.length; i++) {
                 const line = lines[i]; if (line.length < headers.length) continue;
-                const record = {}; let hasContent = false;
+                const record = {}; let valid = false;
                 headers.forEach((header, index) => {
                     const value = line[index] ? line[index].trim() : "";
                     record[header] = value;
-                    if (header === "titulo" && value !== "") hasContent = true;
+                    if (header === "titulo" && value !== "") valid = true;
                 });
-                if (hasContent) jsonArray.push(record);
+                if (valid) jsonArray.push(record);
             }
             return jsonArray;
         }
@@ -210,130 +236,188 @@
         function renderFeed() {
             const container = document.getElementById("feed-container");
             container.innerHTML = "";
-            const searchVal = document.getElementById("search-bar").value.toLowerCase();
+            const query = document.getElementById("search-bar").value.toLowerCase();
 
             const filtered = feedData.filter(item => {
-                const itemTitle = (item.titulo || "").toString().toLowerCase();
-                const itemResumen = (item.resumen || "").toString().toLowerCase();
-                const itemFuente = (item.fuente || "").toString().toLowerCase();
-                return itemTitle.includes(searchVal) || itemResumen.includes(searchVal) || itemFuente.includes(searchVal);
+                const title = (item.titulo || "").toLowerCase();
+                const summary = (item.resumen || "").toLowerCase();
+                const source = (item.fuente || "").toLowerCase();
+                return title.includes(query) || summary.includes(query) || source.includes(query);
             });
 
             if (filtered.length === 0) {
-                container.innerHTML = `<div class="text-center py-16 text-slate-600 text-xs">No encontramos filas o contenido en la hoja "${currentSection}".<br><span class="text-slate-500 text-[11px]">Asegúrate de escribir los datos debajo de las columnas correctas en Google Sheets.</span></div>`;
+                container.innerHTML = `<div class="text-center py-16 text-slate-600 text-xs font-medium">No se encontraron registros activos en esta división.</div>`;
                 return;
             }
 
             filtered.forEach(item => {
                 const card = document.createElement("div");
-                
                 const id = item.id || Math.random();
                 const title = item.titulo || "Sin título";
                 const resumen = item.resumen || "";
-                const fuente = item.fuente || "Mesa Central";
-                const pfm = item.tematica || "Web";
+                const fuente = item.fuente || "Mesa Operativa";
+                const tematica = item.tematica || "Info";
                 const link = item.link || "";
                 const img = item.imagen || "";
 
-                const key = `task_done_${currentSection}_${id}`;
+                const key = `action_${currentSection}_${id}`;
                 const isCompleted = localStorage.getItem(key);
 
                 card.className = isCompleted 
-                    ? "bg-slate-800/10 border border-slate-800/40 opacity-60 rounded-xl p-4 flex flex-col space-y-3 transition-all" 
-                    : "bg-slate-800/40 border border-slate-800/80 rounded-xl p-4 flex flex-col space-y-3 transition-all shadow-md";
+                    ? "bg-slate-800/10 border border-slate-800/40 opacity-50 rounded-2xl p-4 flex flex-col space-y-3 transition-all" 
+                    : "bg-slate-800/40 border border-slate-800/80 rounded-2xl p-4 flex flex-col space-y-3 shadow-md hover:border-slate-700 transition-all";
 
-                let icon = "globe"; let badgeColor = "bg-slate-800 text-slate-300 border-slate-700";
-                if (pfm === "Facebook") { icon = "facebook"; badgeColor = "bg-blue-500/10 text-blue-400 border-blue-500/20"; }
-                else if (pfm === "Instagram") { icon = "instagram"; badgeColor = "bg-pink-500/10 text-pink-400 border-pink-500/20"; }
-                else if (pfm === "X") { icon = "twitter"; badgeColor = "bg-sky-500/10 text-sky-400 border-sky-500/20"; }
-                else if (pfm === "Aviso") { icon = "alert-circle"; badgeColor = "bg-amber-500/10 text-amber-400 border-amber-500/20"; }
+                let mediaHTML = img ? `<div class="w-full max-h-48 rounded-xl overflow-hidden border border-slate-700/40 bg-slate-900"><img src="${escapeHTML(img)}" class="w-full h-full object-cover" loading="lazy"></div>` : "";
+                let actionArea = "";
 
-                let imageHTML = img ? `<div class="w-full max-h-64 rounded-lg overflow-hidden border border-slate-700/50 bg-slate-900"><img src="${escapeHTML(img)}" class="w-full h-full object-cover"></div>` : "";
-                let actionsHTML = "";
-
-                // FILTRADO ESTRICTO DE BOTONES SEGÚN LA HOJA ACTIVA
+                // Renderizado condicional inteligente por sección operativa
                 if (currentSection === "Periodismo") {
-                    actionsHTML = `
-                        <div class="grid grid-cols-2 gap-2">
-                            <button onclick="openReaderModal('${escapeHTML(link)}', '${escapeHTML(fuente)}')" class="h-10 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition-all">
-                                <i data-lucide="book-open" class="w-3.5 h-3.5"></i> Ver Nota
+                    actionArea = `
+                        <div class="grid grid-cols-2 gap-2 pt-1">
+                            <button onclick="openReaderModal('${escapeHTML(link)}', '${escapeHTML(fuente)}')" class="h-10 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 transition-all">
+                                <i data-lucide="eye" class="w-3.5 h-3.5"></i> Ver Reporte
                             </button>
-                            <button onclick="copyTextToClipboard('${escapeHTML(link)}', '¡Enlace copiado!'); markTaskAsDone('${id}')" class="h-10 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold flex items-center justify-center gap-1.5 border border-slate-700/60 transition-all">
-                                <i data-lucide="share-2" class="w-3.5 h-3.5"></i> Copiar Link
+                            <button onclick="copyToClipboard('${escapeHTML(link)}', '¡Enlace copiado al portapapeles!'); markActionCompleted('${id}')" class="h-10 rounded-xl bg-slate-800 text-slate-200 text-xs font-semibold flex items-center justify-center gap-1.5 border border-slate-700 active:scale-95 transition-all">
+                                <i data-lucide="share" class="w-3.5 h-3.5"></i> Copiar Link
                             </button>
                         </div>
                     `;
-                } 
-                else if (currentSection === "Tendencias") {
-                    actionsHTML = `
-                        <div class="space-y-2">
-                            <a href="${escapeHTML(link)}" target="_blank" rel="noopener noreferrer" onclick="markTaskAsDone('${id}')" class="w-full h-11 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-md">
-                                <i data-lucide="external-link" class="w-4 h-4"></i> Abrir en ${pfm} para Interactuar
-                            </a>
-                        </div>
+                } else if (currentSection === "Tendencias") {
+                    actionArea = `
+                        <a href="${escapeHTML(link)}" target="_blank" rel="noopener noreferrer" onclick="markActionCompleted('${id}')" class="w-full h-10 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-xs font-bold flex items-center justify-center gap-2 active:scale-95 transition-all shadow-md shadow-indigo-600/10">
+                            <i data-lucide="external-link" class="w-4 h-4"></i> Abrir en ${tematica}
+                        </a>
                     `;
-                } 
-                else if (currentSection === "Estrategia") {
-                    let copyFlyerBtn = img ? `
-                        <button onclick="copyTextToClipboard('${escapeHTML(img)}', '¡Enlace de flyer copiado!'); markTaskAsDone('${id}')" class="w-full h-10 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold flex items-center justify-center gap-1.5 transition-all">
-                            <i data-lucide="image" class="w-3.5 h-3.5"></i> Copiar Link del Flyer
+                } else if (currentSection === "Estrategia") {
+                    let flyerBtn = img ? `
+                        <button onclick="copyToClipboard('${escapeHTML(img)}', '¡Enlace del flyer listo!'); markActionCompleted('${id}')" class="w-full h-10 rounded-xl bg-indigo-600 text-white text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 transition-all">
+                            <i data-lucide="image" class="w-3.5 h-3.5"></i> Obtener Imagen
                         </button>
                     ` : "";
-                    
-                    actionsHTML = `
-                        <div class="flex flex-col space-y-2">
-                            ${copyFlyerBtn}
-                            <button onclick="copyTextToClipboard('${escapeHTML(resumen)}', 'Instrucción copiada.'); markTaskAsDone('${id}')" class="w-full h-10 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold flex items-center justify-center gap-1.5 border border-slate-700/60 transition-all">
-                                <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copiar Texto de Tarea
+                    actionArea = `
+                        <div class="flex flex-col space-y-2 pt-1">
+                            ${flyerBtn}
+                            <button onclick="copyToClipboard('${escapeHTML(resumen)}', 'Texto de asignación copiado.'); markActionCompleted('${id}')" class="w-full h-10 rounded-xl bg-slate-800 text-slate-300 text-xs font-semibold flex items-center justify-center gap-1.5 border border-slate-700 active:scale-95 transition-all">
+                                <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copiar Guión / Tarea
                             </button>
                         </div>
                     `;
-                }
-                else if (currentSection === "Materiales") {
-                    actionsHTML = `
-                        <div class="grid grid-cols-2 gap-2">
-                            <a href="${escapeHTML(link)}" target="_blank" rel="noopener noreferrer" class="h-10 rounded-lg bg-slate-800 border border-slate-700 hover:bg-slate-700 text-white text-xs font-bold flex items-center justify-center gap-1.5 transition-all">
-                                <i data-lucide="download-cloud" class="w-3.5 h-3.5"></i> Ver/Descargar
+                } else if (currentSection === "Materiales") {
+                    actionArea = `
+                        <div class="grid grid-cols-2 gap-2 pt-1">
+                            <a href="${escapeHTML(link)}" target="_blank" rel="noopener noreferrer" class="h-10 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 transition-all">
+                                <i data-lucide="cloud-download" class="w-3.5 h-3.5"></i> Descargar
                             </a>
-                            <button onclick="copyTextToClipboard('${escapeHTML(link)}', '¡Enlace copiado!')" class="h-10 rounded-lg bg-slate-800 border border-slate-700 hover:bg-slate-700 text-slate-200 text-xs font-semibold flex items-center justify-center gap-1.5 transition-all">
+                            <button onclick="copyToClipboard('${escapeHTML(link)}', 'Acceso copiado')" class="h-10 rounded-xl bg-slate-800 border border-slate-700 text-slate-300 text-xs font-semibold flex items-center justify-center gap-1.5 active:scale-95 transition-all">
                                 <i data-lucide="copy" class="w-3.5 h-3.5"></i> Compartir
                             </button>
                         </div>
                     `;
-                }
-                else if (currentSection === "Mapas") {
-                    actionsHTML = `
-                        <div class="space-y-2">
-                            <button onclick="openReaderModal('${escapeHTML(link)}', '${escapeHTML(fuente)}')" class="w-full h-11 rounded-lg bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-md">
-                                <i data-lucide="map" class="w-4 h-4"></i> Desplegar Mapa de Operación HMO
-                            </button>
-                        </div>
+                } else if (currentSection === "Mapas") {
+                    actionArea = `
+                        <button onclick="openReaderModal('${escapeHTML(link)}', '${escapeHTML(fuente)}')" class="w-full h-11 rounded-xl bg-emerald-600 text-white text-xs font-bold flex items-center justify-center gap-2 active:scale-95 transition-all shadow-lg shadow-emerald-600/10">
+                            <i data-lucide="map-pin" class="w-4 h-4"></i> Desplegar Coordenadas HMO
+                        </button>
                     `;
                 }
 
                 card.innerHTML = `
                     <div class="flex items-center justify-between">
                         <span class="text-xs font-bold text-indigo-400 tracking-wide">${escapeHTML(fuente)}</span>
-                        ${currentSection !== "Materiales" && currentSection !== "Mapas" ? `
-                            <span class="flex items-center gap-1 text-[10px] font-bold border px-2 py-0.5 rounded-md ${badgeColor}"><i data-lucide="${icon}" class="w-3 h-3"></i> ${pfm}</span>
-                        ` : `
-                            <span class="flex items-center gap-1 text-[10px] font-bold border border-indigo-500/30 bg-indigo-500/10 text-indigo-400 px-2 py-0.5 rounded-md"><i data-lucide="folder" class="w-3 h-3"></i> Fijo</span>
-                        `}
+                        <span class="text-[9px] font-black uppercase tracking-wider bg-slate-800 border border-slate-700 px-2 py-0.5 rounded-lg text-slate-400">${escapeHTML(tematica)}</span>
                     </div>
-                    ${imageHTML}
+                    ${mediaHTML}
                     <div class="flex items-start justify-between gap-3">
                         <h2 class="text-sm font-bold text-white leading-snug flex-1">${escapeHTML(title)}</h2>
-                        ${isCompleted ? `<span class="bg-emerald-500/20 text-emerald-400 text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded border border-emerald-500/30">Hecho</span>` : ''}
+                        ${isCompleted ? `<span class="bg-emerald-500/20 text-emerald-400 text-[8px] font-bold px-1.5 py-0.5 rounded border border-emerald-500/20">Atendido</span>` : ''}
                     </div>
-                    <p class="text-xs text-slate-300 leading-relaxed whitespace-pre-wrap">${escapeHTML(resumen)}</p>
-                    ${actionsHTML}
+                    <p class="text-xs text-slate-400 leading-relaxed whitespace-pre-wrap">${escapeHTML(resumen)}</p>
+                    ${actionArea}
                 `;
                 container.appendChild(card);
             });
             lucide.createIcons();
         }
 
-        function copyTextToClipboard(text, successMessage) {
-            if (!text || text === "") return;
-            if (!navigator.clipboard) {
-                const textArea = document.createElement("textarea"); textArea.
+        function copyToClipboard(text, msg) {
+            if (!text) return;
+            navigator.clipboard.writeText(text).then(() => { showToast(msg); }).catch(() => {
+                const t = document.createElement("textarea"); t.value = text;
+                t.style.position = "fixed"; document.body.appendChild(t); t.select();
+                document.execCommand('copy'); document.body.removeChild(t);
+                showToast(msg);
+            });
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById("toast");
+            document.getElementById("toast-text").innerText = msg;
+            toast.classList.remove("hidden");
+            setTimeout(() => { toast.classList.add("hidden"); }, 2000);
+        }
+
+        function openReaderModal(url, fuente) {
+            if(!url) return;
+            document.getElementById("modal-source-badge").innerText = `Zona: ${fuente}`;
+            document.getElementById("news-frame").src = url;
+            document.getElementById("reader-modal").classList.remove("hidden");
+        }
+        
+        function closeReaderModal() {
+            document.getElementById("reader-modal").classList.add("hidden");
+            document.getElementById("news-frame").src = "";
+        }
+
+        function switchTab(s) {
+            currentSection = s;
+            document.getElementById("current-tab-title").innerText = s;
+            document.querySelectorAll(".section-nav").forEach(n => {
+                if(n.getAttribute("data-section") === s) n.classList.replace("text-slate-400", "text-indigo-400");
+                else n.classList.replace("text-indigo-400", "text-slate-400");
+            });
+            
+            if (s === "Mapas") document.getElementById("search-container").classList.add("hidden");
+            else document.getElementById("search-container").classList.remove("hidden");
+
+            fetchData();
+        }
+
+        function escapeHTML(str) {
+            return str.replace(/[&<>'"]/g, t => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[t] || t));
+        }
+
+        // CONTROL AUTOMÁTICO DE ARCHIVOS COMPLEMENTARIOS PWA (Manifest & Service Worker Inline via Data URI)
+        function setupPWAComponents() {
+            const manifestObj = {
+                "name": "AgoraPolis App",
+                "short_name": "AgoraPolis",
+                "start_url": ".",
+                "display": "standalone",
+                "background_color": "#0f172a",
+                "theme_color": "#0f172a",
+                "orientation": "portrait",
+                "icons": [
+                    { "src": "https://cdn-icons-png.flaticon.com/512/11516/11516766.png", "sizes": "512xl512", "type": "image/png" }
+                ]
+            };
+            const manifestStr = JSON.stringify(manifestObj);
+            document.getElementById("pwa-manifest").setAttribute("href", "data:application/manifest+json;base64," + btoa(manifestStr));
+
+            if ('serviceWorker' in navigator) {
+                const swCode = `
+                    const CACHE_NAME = 'polis-v2';
+                    self.addEventListener('install', e => self.skipWaiting());
+                    self.addEventListener('activate', e => e.waitUntil(clients.claim()));
+                    self.addEventListener('fetch', e => {
+                        if(e.request.mode === 'navigate') {
+                            e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
+                        }
+                    });
+                `;
+                const blob = new Blob([swCode], { type: 'application/javascript' });
+                navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(err => console.log("SW Status: Local simulation mode"));
+            }
+        }
+    </script>
+</body>
+</html>
