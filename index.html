@@ -91,7 +91,7 @@
         </div>
     </main>
 
-    <!-- NAVEGACIÓN ESTILO APP (Áreas de interacción > 44px optimizadas para el pulgar) -->
+    <!-- NAVEGACIÓN ESTILO APP -->
     <nav class="fixed bottom-0 left-0 right-0 glass-header border-t border-slate-800/60 z-40 px-2 shadow-2xl">
         <div class="max-w-xl mx-auto flex justify-around items-center h-16">
             <button onclick="switchTab('Periodismo')" class="section-nav flex flex-col items-center justify-center flex-1 h-full text-indigo-400" data-section="Periodismo">
@@ -117,7 +117,7 @@
         </div>
     </nav>
 
-    <!-- VISOR IN-APP MODAL PARA EVITAR SALIR DE LA PWA -->
+    <!-- VISOR IN-APP MODAL -->
     <div id="reader-modal" class="hidden fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex flex-col justify-end sm:justify-center p-0">
         <div class="bg-slate-900 w-full max-w-xl mx-auto h-[92vh] rounded-t-3xl border-t border-slate-800 flex flex-col overflow-hidden shadow-2xl">
             <div class="px-4 py-3 bg-slate-800/60 border-b border-slate-800 flex items-center justify-between">
@@ -134,15 +134,22 @@
 
     <!-- CODE INFRASTRUCTURE & BUSINESS LOGIC -->
     <script>
-        // ID Base del Google Sheets y Mapeo Absoluto de GIDs para evitar cruces
+        // ID Base del Google Sheets
         const SPREADSHEET_ID = "1u1Hey3bmvuU_MrO4NEQItXHquXFwRQjsxO7vsucEbh8"; 
         
+        // 🚨 INSTRUCCIONES IMPORTANTES PARA LOS GIDs 🚨
+        // Para encontrar el GID de cada pestaña:
+        // 1. Abre tu documento de Google Sheets en la PC.
+        // 2. Ve a la pestaña correspondiente (ej. "Tendencias").
+        // 3. Mira la URL en tu navegador, al final verás algo como "#gid=123456789".
+        // 4. Copia SOLO los números después del "=" y sustituye los textos de abajo.
+        // Nota: La primera pestaña "Periodismo" suele tener el gid "0". Las demás tendrán un número distinto.
         const SHEET_GIDS = {
             "Periodismo": "0",          
-            "Tendencias": "123456789",  
-            "Estrategia": "987654321",  
-            "Materiales": "111213141",  
-            "Mapas": "151617181"       
+            "Tendencias": "1617488090",  // Ej: "19385719"
+            "Estrategia": "1312704074",  // Ej: "93718461"
+            "Materiales": "1076184656",  // Ej: "38195821"
+            "Mapas": "1592288157"        // Ej: "91834712"
         };
 
         let currentSection = "Periodismo"; 
@@ -182,13 +189,27 @@
             const container = document.getElementById("feed-container");
             container.innerHTML = `<div class="text-center py-16 text-slate-500 text-xs animate-pulse">Sincronizando canal: ${currentSection}...</div>`;
 
+            // Obtenemos el GID, en caso de fallar o no estar reemplazado usamos un string no válido
             const gid = SHEET_GIDS[currentSection] || "0";
 
+            // Si el usuario olvidó reemplazar un GID y dice "REEMPLAZAR_...", avisamos inmediatamente en pantalla.
+            if (gid.startsWith("REEMPLAZAR_")) {
+                container.innerHTML = `
+                    <div class="text-center py-12 px-4 border border-amber-500/20 bg-amber-500/5 rounded-2xl">
+                        <p class="text-amber-400 text-xs font-semibold">Falta configurar el GID de "${currentSection}"</p>
+                        <p class="text-[10px] text-slate-500 mt-1">Sustituye "REEMPLAZAR_CON_TU_GID_AQUI" con el número real que aparece en la URL del Google Sheets para esta pestaña.</p>
+                    </div>`;
+                if (syncBtn) syncBtn.classList.remove('animate-spin');
+                return;
+            }
+
             try {
-                // Fetch directo con prevención estricta de caché perimetral
+                // Fetch directo con prevención ESTRICTA de caché
+                // Se agrega cache: 'no-store' para forzar la petición al servidor saltando la caché del navegador.
                 const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&gid=${gid}&_ts=${Date.now()}`;
-                const response = await fetch(url);
-                if (!response.ok) throw new Error();
+                const response = await fetch(url, { cache: "no-store", pragma: "no-cache" });
+                
+                if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
                 
                 const csvText = await response.text();
                 feedData = parseCSVToJSON(csvText).sort((a, b) => parseInt(b.id || 0) - parseInt(a.id || 0));
@@ -198,6 +219,7 @@
                     <div class="text-center py-12 px-4 border border-rose-500/20 bg-rose-500/5 rounded-2xl">
                         <p class="text-rose-400 text-xs font-semibold">Error de enlace con la pestaña "${currentSection}"</p>
                         <p class="text-[10px] text-slate-500 mt-1">Verifica el ID, los permisos compartidos y que las columnas sean id, fuente, tematica, titulo, resumen, link.</p>
+                        <p class="text-[9px] text-slate-600 mt-2">${err.message}</p>
                     </div>`;
             } finally {
                 if (syncBtn) syncBtn.classList.remove('animate-spin');
@@ -216,7 +238,7 @@
             if (row.length > 1 || row[0] !== '') lines.push(row);
             if (lines.length <= 1) return [];
 
-            // Sanitización de cabeceras seguras (XSS Shield)
+            // Sanitización de cabeceras seguras
             const headers = lines[0].map(h => h.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, ""));
             const jsonArray = [];
 
